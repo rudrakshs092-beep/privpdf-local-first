@@ -15,12 +15,19 @@ export const buttonVariants = cva(
           "border border-border-strong bg-surface text-foreground hover:bg-surface-muted active:translate-y-px",
         ghost: "text-muted-foreground hover:bg-surface-muted hover:text-foreground",
         icon: "border border-border bg-surface text-foreground hover:bg-surface-muted",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary-strong hover:text-background",
+        outline:
+          "border border-border-strong bg-surface text-foreground hover:bg-surface-muted",
+        destructive: "bg-destructive text-destructive-foreground hover:opacity-90",
+        link: "text-foreground underline-offset-4 hover:underline",
       },
       size: {
         sm: "h-9 px-3.5",
         md: "h-11 px-5",
         lg: "h-12 px-6 text-[0.95rem]",
         icon: "size-11 px-0",
+        default: "h-11 px-5",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },
