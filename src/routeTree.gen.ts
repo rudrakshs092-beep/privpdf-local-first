@@ -10,33 +10,232 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as CompressPdfRouteImport } from './routes/compress-pdf'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as ImageToPdfRouteImport } from './routes/image-to-pdf'
+import { Route as MergePdfRouteImport } from './routes/merge-pdf'
+import { Route as OrganizePdfRouteImport } from './routes/organize-pdf'
+import { Route as PdfToImageRouteImport } from './routes/pdf-to-image'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SignPdfRouteImport } from './routes/sign-pdf'
+import { Route as SplitPdfRouteImport } from './routes/split-pdf'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ToolsRouteImport } from './routes/tools'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompressPdfRoute = CompressPdfRouteImport.update({
+  id: '/compress-pdf',
+  path: '/compress-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImageToPdfRoute = ImageToPdfRouteImport.update({
+  id: '/image-to-pdf',
+  path: '/image-to-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MergePdfRoute = MergePdfRouteImport.update({
+  id: '/merge-pdf',
+  path: '/merge-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizePdfRoute = OrganizePdfRouteImport.update({
+  id: '/organize-pdf',
+  path: '/organize-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PdfToImageRoute = PdfToImageRouteImport.update({
+  id: '/pdf-to-image',
+  path: '/pdf-to-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RotatePdfRoute = RotatePdfRouteImport.update({
+  id: '/rotate-pdf',
+  path: '/rotate-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignPdfRoute = SignPdfRouteImport.update({
+  id: '/sign-pdf',
+  path: '/sign-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplitPdfRoute = SplitPdfRouteImport.update({
+  id: '/split-pdf',
+  path: '/split-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/compress-pdf': typeof CompressPdfRoute
+  '/faq': typeof FaqRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/image-to-pdf': typeof ImageToPdfRoute
+  '/merge-pdf': typeof MergePdfRoute
+  '/organize-pdf': typeof OrganizePdfRoute
+  '/pdf-to-image': typeof PdfToImageRoute
+  '/privacy': typeof PrivacyRoute
+  '/rotate-pdf': typeof RotatePdfRoute
+  '/security': typeof SecurityRoute
+  '/sign-pdf': typeof SignPdfRoute
+  '/split-pdf': typeof SplitPdfRoute
+  '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/compress-pdf': typeof CompressPdfRoute
+  '/faq': typeof FaqRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/image-to-pdf': typeof ImageToPdfRoute
+  '/merge-pdf': typeof MergePdfRoute
+  '/organize-pdf': typeof OrganizePdfRoute
+  '/pdf-to-image': typeof PdfToImageRoute
+  '/privacy': typeof PrivacyRoute
+  '/rotate-pdf': typeof RotatePdfRoute
+  '/security': typeof SecurityRoute
+  '/sign-pdf': typeof SignPdfRoute
+  '/split-pdf': typeof SplitPdfRoute
+  '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/compress-pdf': typeof CompressPdfRoute
+  '/faq': typeof FaqRoute
+  '/how-it-works': typeof HowItWorksRoute
+  '/image-to-pdf': typeof ImageToPdfRoute
+  '/merge-pdf': typeof MergePdfRoute
+  '/organize-pdf': typeof OrganizePdfRoute
+  '/pdf-to-image': typeof PdfToImageRoute
+  '/privacy': typeof PrivacyRoute
+  '/rotate-pdf': typeof RotatePdfRoute
+  '/security': typeof SecurityRoute
+  '/sign-pdf': typeof SignPdfRoute
+  '/split-pdf': typeof SplitPdfRoute
+  '/terms': typeof TermsRoute
+  '/tools': typeof ToolsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/compress-pdf'
+    | '/faq'
+    | '/how-it-works'
+    | '/image-to-pdf'
+    | '/merge-pdf'
+    | '/organize-pdf'
+    | '/pdf-to-image'
+    | '/privacy'
+    | '/rotate-pdf'
+    | '/security'
+    | '/sign-pdf'
+    | '/split-pdf'
+    | '/terms'
+    | '/tools'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/compress-pdf'
+    | '/faq'
+    | '/how-it-works'
+    | '/image-to-pdf'
+    | '/merge-pdf'
+    | '/organize-pdf'
+    | '/pdf-to-image'
+    | '/privacy'
+    | '/rotate-pdf'
+    | '/security'
+    | '/sign-pdf'
+    | '/split-pdf'
+    | '/terms'
+    | '/tools'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/compress-pdf'
+    | '/faq'
+    | '/how-it-works'
+    | '/image-to-pdf'
+    | '/merge-pdf'
+    | '/organize-pdf'
+    | '/pdf-to-image'
+    | '/privacy'
+    | '/rotate-pdf'
+    | '/security'
+    | '/sign-pdf'
+    | '/split-pdf'
+    | '/terms'
+    | '/tools'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  CompressPdfRoute: typeof CompressPdfRoute
+  FaqRoute: typeof FaqRoute
+  HowItWorksRoute: typeof HowItWorksRoute
+  ImageToPdfRoute: typeof ImageToPdfRoute
+  MergePdfRoute: typeof MergePdfRoute
+  OrganizePdfRoute: typeof OrganizePdfRoute
+  PdfToImageRoute: typeof PdfToImageRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RotatePdfRoute: typeof RotatePdfRoute
+  SecurityRoute: typeof SecurityRoute
+  SignPdfRoute: typeof SignPdfRoute
+  SplitPdfRoute: typeof SplitPdfRoute
+  TermsRoute: typeof TermsRoute
+  ToolsRoute: typeof ToolsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +247,131 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compress-pdf': {
+      id: '/compress-pdf'
+      path: '/compress-pdf'
+      fullPath: '/compress-pdf'
+      preLoaderRoute: typeof CompressPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/image-to-pdf': {
+      id: '/image-to-pdf'
+      path: '/image-to-pdf'
+      fullPath: '/image-to-pdf'
+      preLoaderRoute: typeof ImageToPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merge-pdf': {
+      id: '/merge-pdf'
+      path: '/merge-pdf'
+      fullPath: '/merge-pdf'
+      preLoaderRoute: typeof MergePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organize-pdf': {
+      id: '/organize-pdf'
+      path: '/organize-pdf'
+      fullPath: '/organize-pdf'
+      preLoaderRoute: typeof OrganizePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pdf-to-image': {
+      id: '/pdf-to-image'
+      path: '/pdf-to-image'
+      fullPath: '/pdf-to-image'
+      preLoaderRoute: typeof PdfToImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rotate-pdf': {
+      id: '/rotate-pdf'
+      path: '/rotate-pdf'
+      fullPath: '/rotate-pdf'
+      preLoaderRoute: typeof RotatePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-pdf': {
+      id: '/sign-pdf'
+      path: '/sign-pdf'
+      fullPath: '/sign-pdf'
+      preLoaderRoute: typeof SignPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/split-pdf': {
+      id: '/split-pdf'
+      path: '/split-pdf'
+      fullPath: '/split-pdf'
+      preLoaderRoute: typeof SplitPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  CompressPdfRoute: CompressPdfRoute,
+  FaqRoute: FaqRoute,
+  HowItWorksRoute: HowItWorksRoute,
+  ImageToPdfRoute: ImageToPdfRoute,
+  MergePdfRoute: MergePdfRoute,
+  OrganizePdfRoute: OrganizePdfRoute,
+  PdfToImageRoute: PdfToImageRoute,
+  PrivacyRoute: PrivacyRoute,
+  RotatePdfRoute: RotatePdfRoute,
+  SecurityRoute: SecurityRoute,
+  SignPdfRoute: SignPdfRoute,
+  SplitPdfRoute: SplitPdfRoute,
+  TermsRoute: TermsRoute,
+  ToolsRoute: ToolsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
