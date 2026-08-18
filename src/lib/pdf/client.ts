@@ -87,7 +87,7 @@ export async function renderPageToCanvas(bytes: ArrayBuffer, pageNumber: number,
   canvas.width = Math.ceil(viewport.width);
   canvas.height = Math.ceil(viewport.height);
   const context = canvas.getContext("2d")!;
-  await page.render({ canvasContext: context, viewport, canvas }).promise;
+  await page.render({ canvasContext: context, viewport } as never).promise;
   await doc.destroy();
   return canvas;
 }
