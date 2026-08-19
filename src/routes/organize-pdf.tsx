@@ -5,15 +5,27 @@ import { useState } from "react";
 import { FileDrop } from "@/components/tools/FileDrop";
 import { ToolError, ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
-import { baseName, downloadBytes, formatBytes, loadPdfLib, renderThumbnails } from "@/lib/pdf/client";
+import {
+  baseName,
+  downloadBytes,
+  formatBytes,
+  loadPdfLib,
+  renderThumbnails,
+} from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/organize-pdf")({
   head: () => ({
     meta: [
       { title: "Organize PDF — PrivPDF" },
-      { name: "description", content: "Reorder, rotate and delete PDF pages in your browser. No uploads, no signups." },
+      {
+        name: "description",
+        content: "Reorder, rotate and delete PDF pages in your browser. No uploads, no signups.",
+      },
       { property: "og:title", content: "Organize PDF — PrivPDF" },
-      { property: "og:description", content: "Reorder, rotate and delete PDF pages in your browser. No uploads, no signups." },
+      {
+        property: "og:description",
+        content: "Reorder, rotate and delete PDF pages in your browser. No uploads, no signups.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -91,7 +103,9 @@ function Page() {
 
   const rotate = (id: string) => {
     setPages((current) =>
-      current.map((page) => (page.id === id ? { ...page, rotation: (page.rotation + 90) % 360 } : page)),
+      current.map((page) =>
+        page.id === id ? { ...page, rotation: (page.rotation + 90) % 360 } : page,
+      ),
     );
   };
 
@@ -149,7 +163,9 @@ function Page() {
             hint="One PDF file to organize."
             onFiles={pick}
           />
-          {loading && <p className="mt-4 text-sm text-muted-foreground">Rendering page previews…</p>}
+          {loading && (
+            <p className="mt-4 text-sm text-muted-foreground">Rendering page previews…</p>
+          )}
           <ToolError message={error} />
         </>
       ) : (

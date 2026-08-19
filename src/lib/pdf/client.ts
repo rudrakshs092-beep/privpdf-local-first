@@ -57,10 +57,12 @@ export function parsePageRanges(input: string, pageCount: number): number[] {
     const [, rawStart, dash, rawEnd] = match;
     let start = rawStart ? Number(rawStart) : 1;
     let end = dash ? (rawEnd ? Number(rawEnd) : pageCount) : Number(rawStart ?? rawEnd);
-    if (!Number.isFinite(start) || !Number.isFinite(end)) throw new Error(`Invalid page range: "${part}"`);
+    if (!Number.isFinite(start) || !Number.isFinite(end))
+      throw new Error(`Invalid page range: "${part}"`);
     if (start > end) [start, end] = [end, start];
     for (let page = start; page <= end; page++) {
-      if (page < 1 || page > pageCount) throw new Error(`Page ${page} is out of range (1-${pageCount})`);
+      if (page < 1 || page > pageCount)
+        throw new Error(`Page ${page} is out of range (1-${pageCount})`);
       if (!seen.has(page)) {
         seen.add(page);
         out.push(page - 1);
@@ -130,6 +132,10 @@ export async function renderThumbnails(
 
 export async function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number) {
   return await new Promise<Blob>((resolve, reject) =>
-    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("Could not encode image"))), type, quality),
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error("Could not encode image"))),
+      type,
+      quality,
+    ),
   );
 }
