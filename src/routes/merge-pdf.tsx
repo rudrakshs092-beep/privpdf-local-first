@@ -31,7 +31,10 @@ function Page() {
       const next = [...current];
       const target = index + delta;
       if (target < 0 || target >= next.length) return current;
-      [next[index], next[target]] = [next[target], next[index]];
+      const a = next[index]!;
+      const b = next[target]!;
+      next[index] = b;
+      next[target] = a;
       return next;
     });
   };
