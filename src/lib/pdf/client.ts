@@ -92,6 +92,42 @@ export async function renderPageToCanvas(bytes: ArrayBuffer, pageNumber: number,
   return canvas;
 }
 
+/**
+ * Renders every page to a small JPEG data URL for thumbnail previews.
+ * Canvases are discarded after each page to keep memory usage low.
+ */
+export async function renderThumbnails(
+  bytes: ArrayBuffer,
+  maxWidth = 220,
+  onPage?: (index: number, url: string) => void,
+): Promise<string[]> {
+  const pdfjs = await loadPdfJs();
+  const doc = await pdfjs.getDocument({ data: new Uint8Array(bytes.slice(0)) }).promise;
+  const urls: string[] = [];
+  try {
+    for (let pageNumber = 1; pageNumber <= doc.numPages; pageNumber++) {
+      const page = await doc.getPage(pageNumber);
+      const base = page.getViewport({ scale: 1 });
+      const scale = Math.min(1, maxWidth / base.width);
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.ceil(viewport.width));
+      canvas.height = Math.max(1, Math.ceil(viewport.height));
+      const context = canvas.getContext("2d")!;
+      await page.render({ canvasContext: context, viewport } as never).promise;
+      const url = canvas.toDataURL("image/jpeg", 0.7);
+      urls.push(url);
+      onPage?.(pageNumber - 1, url);
+      canvas.width = 0;
+      canvas.height = 0;
+      page.cleanup();
+    }
+  } finally {
+    await doc.destroy();
+  }
+  return urls;
+}
+
 export async function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number) {
   return await new Promise<Blob>((resolve, reject) =>
     canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("Could not encode image"))), type, quality),
