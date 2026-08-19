@@ -30,6 +30,7 @@ function Page() {
 
   const pick = async (files: File[]) => {
     const next = files[0];
+    if (!next) return;
     setError(null);
     setFile(next);
     try {

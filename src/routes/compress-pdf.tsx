@@ -93,7 +93,7 @@ function Page() {
           hint="One PDF file to compress."
           onFiles={(files) => {
             setStatus(null);
-            setFile(files[0]);
+            setFile(files[0] ?? null);
           }}
         />
       ) : (
