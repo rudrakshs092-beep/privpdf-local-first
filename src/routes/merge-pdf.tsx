@@ -46,13 +46,14 @@ function Page() {
       const { PDFDocument } = await loadPdfLib();
       const output = await PDFDocument.create();
       for (const file of files) {
-        const source = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+        const source = await loadPdfDocument(await file.arrayBuffer(), file.name);
         const pages = await output.copyPages(source, source.getPageIndices());
         pages.forEach((page) => output.addPage(page));
       }
+      if (output.getPageCount() === 0) throw new Error("These PDFs contain no pages.");
       downloadBytes(await output.save(), "privpdf-merged.pdf");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not merge these files");
+      setError(friendlyPdfError(cause));
     } finally {
       setBusy(false);
     }
