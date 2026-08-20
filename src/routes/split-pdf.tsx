@@ -37,6 +37,13 @@ function Page() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const reset = () => {
+    setFile(null);
+    setPageCount(0);
+    setRanges("1-1");
+    setError(null);
+  };
+
   const pick = async (files: File[]) => {
     const next = files[0];
     if (!next) return;
@@ -44,11 +51,13 @@ function Page() {
     setFile(next);
     try {
       const count = await getPageCount(await next.arrayBuffer());
+      if (count === 0) throw new Error("This PDF has no pages.");
       setPageCount(count);
       setRanges(`1-${count}`);
-    } catch {
-      setError("Could not read this PDF");
+    } catch (cause) {
+      setError(friendlyPdfError(cause, next.name));
       setFile(null);
+      setPageCount(0);
     }
   };
 
@@ -59,13 +68,13 @@ function Page() {
     try {
       const indices = parsePageRanges(ranges, pageCount);
       const { PDFDocument } = await loadPdfLib();
-      const source = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      const source = await loadPdfDocument(await file.arrayBuffer(), file.name);
       const output = await PDFDocument.create();
       const pages = await output.copyPages(source, indices);
       pages.forEach((page) => output.addPage(page));
       downloadBytes(await output.save(), `${baseName(file.name)}-extract.pdf`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not split this file");
+      setError(friendlyPdfError(cause, file.name));
     } finally {
       setBusy(false);
     }
@@ -78,7 +87,7 @@ function Page() {
     try {
       const { PDFDocument } = await loadPdfLib();
       const bytes = await file.arrayBuffer();
-      const source = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const source = await loadPdfDocument(bytes, file.name);
       for (let index = 0; index < source.getPageCount(); index++) {
         const output = await PDFDocument.create();
         const [page] = await output.copyPages(source, [index]);
