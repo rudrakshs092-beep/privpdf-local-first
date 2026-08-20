@@ -5,7 +5,15 @@ import { FileDrop } from "@/components/tools/FileDrop";
 import { ToolError, ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { baseName, downloadBytes, formatBytes, getPageCount, loadPdfLib, parsePageRanges } from "@/lib/pdf/client";
+import {
+  baseName,
+  downloadBytes,
+  formatBytes,
+  friendlyPdfError,
+  getPageCount,
+  loadPdfDocument,
+  parsePageRanges,
+} from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/rotate-pdf")({
   head: () => ({

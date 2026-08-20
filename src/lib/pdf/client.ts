@@ -73,9 +73,32 @@ export function parsePageRanges(input: string, pageCount: number): number[] {
   return out;
 }
 
-export async function getPageCount(bytes: ArrayBuffer) {
+/** Turns raw pdf-lib / PDF.js errors into a message a person can act on. */
+export function friendlyPdfError(cause: unknown, fileName?: string): string {
+  const message = cause instanceof Error ? cause.message : "";
+  const where = fileName ? ` “${fileName}”` : "";
+  if (/password|encrypt/i.test(message))
+    return `The PDF${where} is password protected, so it cannot be processed.`;
+  if (/header|parse|invalid|corrupt|stream|xref|Expected|structure/i.test(message))
+    return `Could not read the PDF${where}. It may be corrupted or not a PDF file.`;
+  if (/no pages|0 pages/i.test(message)) return `The PDF${where} has no pages.`;
+  return message || `Something went wrong while processing the PDF${where}.`;
+}
+
+/** Loads a PDF with pdf-lib, raising a readable error for bad input. */
+export async function loadPdfDocument(bytes: ArrayBuffer, fileName?: string) {
+  if (bytes.byteLength === 0)
+    throw new Error(`The file${fileName ? ` “${fileName}”` : ""} is empty.`);
   const { PDFDocument } = await loadPdfLib();
-  const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  try {
+    return await PDFDocument.load(bytes, { ignoreEncryption: true });
+  } catch (cause) {
+    throw new Error(friendlyPdfError(cause, fileName));
+  }
+}
+
+export async function getPageCount(bytes: ArrayBuffer) {
+  const doc = await loadPdfDocument(bytes);
   return doc.getPageCount();
 }
 

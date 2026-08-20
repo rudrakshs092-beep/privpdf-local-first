@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FileDrop } from "@/components/tools/FileDrop";
 import { ToolError, ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
-import { downloadBytes, formatBytes, loadPdfLib } from "@/lib/pdf/client";
+import { downloadBytes, formatBytes, friendlyPdfError, loadPdfDocument, loadPdfLib } from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/merge-pdf")({
   head: () => ({
@@ -46,13 +46,14 @@ function Page() {
       const { PDFDocument } = await loadPdfLib();
       const output = await PDFDocument.create();
       for (const file of files) {
-        const source = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+        const source = await loadPdfDocument(await file.arrayBuffer(), file.name);
         const pages = await output.copyPages(source, source.getPageIndices());
         pages.forEach((page) => output.addPage(page));
       }
+      if (output.getPageCount() === 0) throw new Error("These PDFs contain no pages.");
       downloadBytes(await output.save(), "privpdf-merged.pdf");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not merge these files");
+      setError(friendlyPdfError(cause));
     } finally {
       setBusy(false);
     }
@@ -68,7 +69,18 @@ function Page() {
         multiple
         label="Drop your PDF files here"
         hint="Two or more PDFs, merged in the order you choose."
-        onFiles={(incoming) => setFiles((current) => [...current, ...incoming.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"))])}
+        onFiles={(incoming) => {
+          const accepted = incoming.filter(
+            (f) =>
+              (f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf")) && f.size > 0,
+          );
+          setError(
+            accepted.length === incoming.length
+              ? null
+              : "Some files were skipped because they are empty or not PDFs.",
+          );
+          if (accepted.length > 0) setFiles((current) => [...current, ...accepted]);
+        }}
       />
 
       {files.length > 0 && (
