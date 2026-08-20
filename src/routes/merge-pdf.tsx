@@ -69,7 +69,18 @@ function Page() {
         multiple
         label="Drop your PDF files here"
         hint="Two or more PDFs, merged in the order you choose."
-        onFiles={(incoming) => setFiles((current) => [...current, ...incoming.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"))])}
+        onFiles={(incoming) => {
+          const accepted = incoming.filter(
+            (f) =>
+              (f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf")) && f.size > 0,
+          );
+          setError(
+            accepted.length === incoming.length
+              ? null
+              : "Some files were skipped because they are empty or not PDFs.",
+          );
+          if (accepted.length > 0) setFiles((current) => [...current, ...accepted]);
+        }}
       />
 
       {files.length > 0 && (
