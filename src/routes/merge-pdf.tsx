@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FileDrop } from "@/components/tools/FileDrop";
 import { ToolError, ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
-import { downloadBytes, formatBytes, loadPdfLib } from "@/lib/pdf/client";
+import { downloadBytes, formatBytes, friendlyPdfError, loadPdfDocument, loadPdfLib } from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/merge-pdf")({
   head: () => ({
