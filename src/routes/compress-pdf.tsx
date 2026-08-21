@@ -104,7 +104,16 @@ function Page() {
           <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
             <span className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</span>
             <span className="text-xs text-muted-foreground">{formatBytes(file.size)}</span>
-            <Button variant="secondary" size="sm" onClick={() => setFile(null)} disabled={busy}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setFile(null);
+                setStatus(null);
+                setError(null);
+              }}
+              disabled={busy}
+            >
               Change
             </Button>
           </div>
@@ -125,7 +134,8 @@ function Page() {
               ))}
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Text stays readable but becomes part of the page image, so selectable text is not preserved.
+              Each page is re-rendered as an image, so selectable text, links and vector detail are
+              replaced by a flat picture of the page. Keep the original if you need editable text.
             </p>
           </div>
 

@@ -9,6 +9,8 @@ import {
   baseName,
   downloadBytes,
   formatBytes,
+  friendlyPdfError,
+  loadPdfDocument,
   loadPdfLib,
   renderThumbnails,
 } from "@/lib/pdf/client";
