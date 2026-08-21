@@ -53,7 +53,7 @@ function Page() {
       if (output.getPageCount() === 0) throw new Error("These PDFs contain no pages.");
       downloadBytes(await output.save(), "privpdf-merged.pdf");
     } catch (cause) {
-      setError(friendlyPdfError(cause));
+      setError(cause instanceof Error && cause.message ? cause.message : friendlyPdfError(cause));
     } finally {
       setBusy(false);
     }
