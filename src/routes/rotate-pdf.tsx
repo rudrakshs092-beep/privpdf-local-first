@@ -80,7 +80,7 @@ function Page() {
       }
       downloadBytes(await doc.save(), `${baseName(file.name)}-rotated.pdf`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not rotate this file");
+      setError(friendlyPdfError(cause, file.name));
     } finally {
       setBusy(false);
     }
@@ -97,7 +97,7 @@ function Page() {
             <span className="text-xs text-muted-foreground">
               {pageCount} pages · {formatBytes(file.size)}
             </span>
-            <Button variant="secondary" size="sm" onClick={() => setFile(null)}>
+            <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
               Change
             </Button>
           </div>
