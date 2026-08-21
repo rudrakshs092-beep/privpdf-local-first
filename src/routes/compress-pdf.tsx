@@ -51,9 +51,10 @@ function Page() {
       const preset = levels.find((item) => item.id === level)!;
       const bytes = await file.arrayBuffer();
       const { PDFDocument } = await loadPdfLib();
-      const source = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const source = await loadPdfDocument(bytes, file.name);
       const output = await PDFDocument.create();
       const pageCount = source.getPageCount();
+      if (pageCount === 0) throw new Error("This PDF has no pages.");
 
       for (let index = 0; index < pageCount; index++) {
         setStatus(`Compressing page ${index + 1} of ${pageCount}…`);
@@ -76,7 +77,7 @@ function Page() {
         downloadBytes(saved, `${baseName(file.name)}-compressed.pdf`);
       }
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not compress this file");
+      setError(friendlyPdfError(cause, file.name));
       setStatus(null);
     } finally {
       setBusy(false);
