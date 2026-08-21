@@ -9,6 +9,8 @@ import {
   baseName,
   downloadBytes,
   formatBytes,
+  friendlyPdfError,
+  loadPdfDocument,
   loadPdfLib,
   renderThumbnails,
 } from "@/lib/pdf/client";
@@ -131,7 +133,7 @@ function Page() {
     setBusy(true);
     try {
       const { PDFDocument, degrees } = await loadPdfLib();
-      const source = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      const source = await loadPdfDocument(await file.arrayBuffer(), file.name);
       const output = await PDFDocument.create();
       const copied = await output.copyPages(
         source,
@@ -144,7 +146,7 @@ function Page() {
       });
       downloadBytes(await output.save(), `${baseName(file.name)}-organized.pdf`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not generate the organized PDF");
+      setError(friendlyPdfError(cause, file.name));
     } finally {
       setBusy(false);
     }

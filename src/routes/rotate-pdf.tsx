@@ -12,6 +12,7 @@ import {
   friendlyPdfError,
   getPageCount,
   loadPdfDocument,
+  loadPdfLib,
   parsePageRanges,
 } from "@/lib/pdf/client";
 
@@ -39,15 +40,26 @@ function Page() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const reset = () => {
+    setFile(null);
+    setPageCount(0);
+    setScope("all");
+    setError(null);
+  };
+
   const pick = async (files: File[]) => {
     const next = files[0];
     if (!next) return;
     setError(null);
     try {
-      setPageCount(await getPageCount(await next.arrayBuffer()));
+      const count = await getPageCount(await next.arrayBuffer());
+      if (count === 0) throw new Error("This PDF has no pages.");
+      setPageCount(count);
       setFile(next);
-    } catch {
-      setError("Could not read this PDF");
+    } catch (cause) {
+      setError(friendlyPdfError(cause, next.name));
+      setFile(null);
+      setPageCount(0);
     }
   };
 
@@ -56,8 +68,8 @@ function Page() {
     setError(null);
     setBusy(true);
     try {
-      const { PDFDocument, degrees } = await loadPdfLib();
-      const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      const { degrees } = await loadPdfLib();
+      const doc = await loadPdfDocument(await file.arrayBuffer(), file.name);
       const targets =
         scope.trim().toLowerCase() === "all"
           ? doc.getPageIndices()
@@ -68,7 +80,7 @@ function Page() {
       }
       downloadBytes(await doc.save(), `${baseName(file.name)}-rotated.pdf`);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not rotate this file");
+      setError(friendlyPdfError(cause, file.name));
     } finally {
       setBusy(false);
     }
@@ -85,7 +97,7 @@ function Page() {
             <span className="text-xs text-muted-foreground">
               {pageCount} pages · {formatBytes(file.size)}
             </span>
-            <Button variant="secondary" size="sm" onClick={() => setFile(null)}>
+            <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
               Change
             </Button>
           </div>

@@ -9,6 +9,8 @@ import {
   canvasToBlob,
   downloadBytes,
   formatBytes,
+  friendlyPdfError,
+  loadPdfDocument,
   loadPdfLib,
   renderPageToCanvas,
 } from "@/lib/pdf/client";
@@ -49,9 +51,10 @@ function Page() {
       const preset = levels.find((item) => item.id === level)!;
       const bytes = await file.arrayBuffer();
       const { PDFDocument } = await loadPdfLib();
-      const source = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const source = await loadPdfDocument(bytes, file.name);
       const output = await PDFDocument.create();
       const pageCount = source.getPageCount();
+      if (pageCount === 0) throw new Error("This PDF has no pages.");
 
       for (let index = 0; index < pageCount; index++) {
         setStatus(`Compressing page ${index + 1} of ${pageCount}…`);
@@ -74,7 +77,7 @@ function Page() {
         downloadBytes(saved, `${baseName(file.name)}-compressed.pdf`);
       }
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not compress this file");
+      setError(friendlyPdfError(cause, file.name));
       setStatus(null);
     } finally {
       setBusy(false);
@@ -101,7 +104,16 @@ function Page() {
           <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
             <span className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</span>
             <span className="text-xs text-muted-foreground">{formatBytes(file.size)}</span>
-            <Button variant="secondary" size="sm" onClick={() => setFile(null)} disabled={busy}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setFile(null);
+                setStatus(null);
+                setError(null);
+              }}
+              disabled={busy}
+            >
               Change
             </Button>
           </div>
@@ -122,7 +134,8 @@ function Page() {
               ))}
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Text stays readable but becomes part of the page image, so selectable text is not preserved.
+              Each page is re-rendered as an image, so selectable text, links and vector detail are
+              replaced by a flat picture of the page. Keep the original if you need editable text.
             </p>
           </div>
 
