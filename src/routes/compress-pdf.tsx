@@ -9,6 +9,8 @@ import {
   canvasToBlob,
   downloadBytes,
   formatBytes,
+  friendlyPdfError,
+  loadPdfDocument,
   loadPdfLib,
   renderPageToCanvas,
 } from "@/lib/pdf/client";
