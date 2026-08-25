@@ -25,6 +25,7 @@ import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SignPdfRouteImport } from './routes/sign-pdf'
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TextWatermarkRouteImport } from './routes/text-watermark'
 import { Route as ToolsRouteImport } from './routes/tools'
 
 const IndexRoute = IndexRouteImport.update({
@@ -107,6 +108,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TextWatermarkRoute = TextWatermarkRouteImport.update({
+  id: '/text-watermark',
+  path: '/text-watermark',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/sign-pdf': typeof SignPdfRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
+  '/text-watermark': typeof TextWatermarkRoute
   '/tools': typeof ToolsRoute
 }
 export interface FileRoutesByTo {
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/sign-pdf': typeof SignPdfRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
+  '/text-watermark': typeof TextWatermarkRoute
   '/tools': typeof ToolsRoute
 }
 export interface FileRoutesById {
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/sign-pdf': typeof SignPdfRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
+  '/text-watermark': typeof TextWatermarkRoute
   '/tools': typeof ToolsRoute
 }
 export interface FileRouteTypes {
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/sign-pdf'
     | '/split-pdf'
     | '/terms'
+    | '/text-watermark'
     | '/tools'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/sign-pdf'
     | '/split-pdf'
     | '/terms'
+    | '/text-watermark'
     | '/tools'
   id:
     | '__root__'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/sign-pdf'
     | '/split-pdf'
     | '/terms'
+    | '/text-watermark'
     | '/tools'
   fileRoutesById: FileRoutesById
 }
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   SignPdfRoute: typeof SignPdfRoute
   SplitPdfRoute: typeof SplitPdfRoute
   TermsRoute: typeof TermsRoute
+  TextWatermarkRoute: typeof TextWatermarkRoute
   ToolsRoute: typeof ToolsRoute
 }
 
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/text-watermark': {
+      id: '/text-watermark'
+      path: '/text-watermark'
+      fullPath: '/text-watermark'
+      preLoaderRoute: typeof TextWatermarkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools': {
       id: '/tools'
       path: '/tools'
@@ -392,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignPdfRoute: SignPdfRoute,
   SplitPdfRoute: SplitPdfRoute,
   TermsRoute: TermsRoute,
+  TextWatermarkRoute: TextWatermarkRoute,
   ToolsRoute: ToolsRoute,
 }
 export const routeTree = rootRouteImport
