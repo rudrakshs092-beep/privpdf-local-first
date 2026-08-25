@@ -44,16 +44,16 @@ export const tools: {
     icon: "compress",
   },
   {
-    name: "Organize PDF",
-    to: "/organize-pdf",
-    description: "Reorder, remove and arrange pages.",
-    icon: "organize",
-  },
-  {
     name: "Rotate PDF",
     to: "/rotate-pdf",
     description: "Fix page orientation in seconds.",
     icon: "rotate",
+  },
+  {
+    name: "Organize PDF",
+    to: "/organize-pdf",
+    description: "Reorder, remove and arrange pages.",
+    icon: "organize",
   },
   {
     name: "Image to PDF",
