@@ -2,12 +2,14 @@ import { Link } from "@tanstack/react-router";
 import {
   Combine,
   FileImage,
+  Hash,
   Images,
   Minimize2,
   PenLine,
   RotateCw,
   Scissors,
   LayoutList,
+  Stamp,
   type LucideIcon,
 } from "lucide-react";
 
@@ -22,6 +24,8 @@ const icons: Record<string, LucideIcon> = {
   image: FileImage,
   export: Images,
   sign: PenLine,
+  numbers: Hash,
+  watermark: Stamp,
 };
 
 export function ToolGrid() {
@@ -54,7 +58,7 @@ export function ToolGrid() {
                     {tool.description}
                   </p>
                   <span className="mt-4 inline-flex w-fit rounded-full border border-border bg-surface-muted px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Coming soon
+                    Open tool
                   </span>
                 </Link>
               </li>
