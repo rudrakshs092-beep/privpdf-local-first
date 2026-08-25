@@ -17,6 +17,7 @@ import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ImageToPdfRouteImport } from './routes/image-to-pdf'
 import { Route as MergePdfRouteImport } from './routes/merge-pdf'
 import { Route as OrganizePdfRouteImport } from './routes/organize-pdf'
+import { Route as PageNumbersRouteImport } from './routes/page-numbers'
 import { Route as PdfToImageRouteImport } from './routes/pdf-to-image'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
@@ -64,6 +65,11 @@ const MergePdfRoute = MergePdfRouteImport.update({
 const OrganizePdfRoute = OrganizePdfRouteImport.update({
   id: '/organize-pdf',
   path: '/organize-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PageNumbersRoute = PageNumbersRouteImport.update({
+  id: '/page-numbers',
+  path: '/page-numbers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PdfToImageRoute = PdfToImageRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/image-to-pdf': typeof ImageToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/organize-pdf': typeof OrganizePdfRoute
+  '/page-numbers': typeof PageNumbersRoute
   '/pdf-to-image': typeof PdfToImageRoute
   '/privacy': typeof PrivacyRoute
   '/rotate-pdf': typeof RotatePdfRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/image-to-pdf': typeof ImageToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/organize-pdf': typeof OrganizePdfRoute
+  '/page-numbers': typeof PageNumbersRoute
   '/pdf-to-image': typeof PdfToImageRoute
   '/privacy': typeof PrivacyRoute
   '/rotate-pdf': typeof RotatePdfRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/image-to-pdf': typeof ImageToPdfRoute
   '/merge-pdf': typeof MergePdfRoute
   '/organize-pdf': typeof OrganizePdfRoute
+  '/page-numbers': typeof PageNumbersRoute
   '/pdf-to-image': typeof PdfToImageRoute
   '/privacy': typeof PrivacyRoute
   '/rotate-pdf': typeof RotatePdfRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/image-to-pdf'
     | '/merge-pdf'
     | '/organize-pdf'
+    | '/page-numbers'
     | '/pdf-to-image'
     | '/privacy'
     | '/rotate-pdf'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/image-to-pdf'
     | '/merge-pdf'
     | '/organize-pdf'
+    | '/page-numbers'
     | '/pdf-to-image'
     | '/privacy'
     | '/rotate-pdf'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/image-to-pdf'
     | '/merge-pdf'
     | '/organize-pdf'
+    | '/page-numbers'
     | '/pdf-to-image'
     | '/privacy'
     | '/rotate-pdf'
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   ImageToPdfRoute: typeof ImageToPdfRoute
   MergePdfRoute: typeof MergePdfRoute
   OrganizePdfRoute: typeof OrganizePdfRoute
+  PageNumbersRoute: typeof PageNumbersRoute
   PdfToImageRoute: typeof PdfToImageRoute
   PrivacyRoute: typeof PrivacyRoute
   RotatePdfRoute: typeof RotatePdfRoute
@@ -294,6 +307,13 @@ declare module '@tanstack/react-router' {
       path: '/organize-pdf'
       fullPath: '/organize-pdf'
       preLoaderRoute: typeof OrganizePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/page-numbers': {
+      id: '/page-numbers'
+      path: '/page-numbers'
+      fullPath: '/page-numbers'
+      preLoaderRoute: typeof PageNumbersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pdf-to-image': {
@@ -364,6 +384,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImageToPdfRoute: ImageToPdfRoute,
   MergePdfRoute: MergePdfRoute,
   OrganizePdfRoute: OrganizePdfRoute,
+  PageNumbersRoute: PageNumbersRoute,
   PdfToImageRoute: PdfToImageRoute,
   PrivacyRoute: PrivacyRoute,
   RotatePdfRoute: RotatePdfRoute,
