@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function ToolShell({
@@ -12,19 +12,20 @@ export function ToolShell({
   children: ReactNode;
 }) {
   return (
-    <section className="section-x py-14 sm:py-20">
-      <nav className="text-sm text-muted-foreground">
-        <Link to="/" className="hover:text-foreground">
-          Home
-        </Link>
-        <span className="px-2">/</span>
-        <Link to="/tools" className="hover:text-foreground">
-          Tools
-        </Link>
-      </nav>
+    <section className="section-x py-10 sm:py-16">
+      <Link
+        to="/tools"
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-primary-soft hover:text-primary-strong"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        Back to Tools
+      </Link>
 
-      <header className="mt-4 max-w-2xl">
-        <h1 className="text-3xl font-extrabold sm:text-4xl">{title}</h1>
+      <header className="mt-5 max-w-2xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary-strong">
+          PrivPDF tool
+        </p>
+        <h1 className="mt-2 text-3xl font-extrabold sm:text-4xl">{title}</h1>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">{description}</p>
         <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-primary-soft px-3 py-1 text-xs font-semibold text-accent-foreground">
           <ShieldCheck className="size-3.5" aria-hidden="true" />
@@ -32,7 +33,7 @@ export function ToolShell({
         </span>
       </header>
 
-      <div className="mt-8 rounded-xl border border-border bg-surface p-5 sm:p-7">{children}</div>
+      <div className="mt-7 rounded-xl border border-border bg-surface p-5 sm:p-7">{children}</div>
     </section>
   );
 }
