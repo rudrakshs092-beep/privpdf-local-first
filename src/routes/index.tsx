@@ -1,12 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { CTASection } from "@/components/home/CTASection";
 import { Hero } from "@/components/home/Hero";
-import { HowItWorks } from "@/components/home/HowItWorks";
 import { PrivacySection } from "@/components/home/PrivacySection";
 import { ToolGrid } from "@/components/home/ToolGrid";
 import { TrustPoints } from "@/components/home/TrustPoints";
-import { WhyPrivPDF } from "@/components/home/WhyPrivPDF";
 
 const title = "PrivPDF — Privacy-first PDF tools for everyday documents";
 const description =
@@ -28,14 +25,11 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <>
+    <div className="landing-shell">
       <Hero />
       <TrustPoints />
       <ToolGrid />
-      <WhyPrivPDF />
-      <HowItWorks />
       <PrivacySection />
-      <CTASection />
-    </>
+    </div>
   );
 }
