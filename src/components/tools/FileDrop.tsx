@@ -49,7 +49,7 @@ export function FileDrop({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="mt-5 inline-flex min-h-11 max-w-full items-center rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong hover:text-background"
+        className="mt-5 inline-flex touch-manipulation min-h-11 max-w-full items-center rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong hover:text-background"
       >
         Choose file{multiple ? "s" : ""}
       </button>

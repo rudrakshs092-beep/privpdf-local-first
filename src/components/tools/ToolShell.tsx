@@ -34,7 +34,9 @@ export function ToolShell({
         </span>
       </header>
 
-      <div className="mt-7 rounded-xl border border-border bg-surface p-5 sm:p-7">{children}</div>
+      <div className="mt-7 min-w-0 rounded-xl border border-border bg-surface p-5 sm:p-7">
+        {children}
+      </div>
     </section>
   );
 }
