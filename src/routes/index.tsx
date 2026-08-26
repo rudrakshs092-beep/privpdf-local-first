@@ -3,11 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Hero } from "@/components/home/Hero";
 import { PrivacySection } from "@/components/home/PrivacySection";
 import { ToolGrid } from "@/components/home/ToolGrid";
-import { TrustPoints } from "@/components/home/TrustPoints";
 
-const title = "PrivPDF — Privacy-first PDF tools for everyday documents";
+const title = "PrivPDF — Simple PDF tools that keep files on your device";
 const description =
-  "Merge, split, compress and organize PDFs with privacy-first tools. No unnecessary uploads, no signup, no watermarks.";
+  "Simple PDF tools for everyday files. Your files stay safe on your device with no upload needed.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,7 +26,6 @@ function Index() {
   return (
     <div className="landing-shell">
       <Hero />
-      <TrustPoints />
       <ToolGrid />
       <PrivacySection />
     </div>

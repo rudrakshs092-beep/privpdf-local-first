@@ -48,16 +48,26 @@ export function Navbar() {
               <span>Search</span>
             </a>
           ) : null}
-          {mainNav.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "text-foreground" }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {mainNav.map((item) =>
+            item.label === "Tools" ? (
+              <a
+                key={item.to}
+                href="/#tools"
+                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: "text-foreground" }}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -172,30 +182,26 @@ function MobileMenu({
           {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           {dark ? "Light mode" : "Dark mode"}
         </button>
-        {mainNav.map((item) => (
-          <Link
-            key={item.to}
-            to={item.to}
-            onClick={onNavigate}
-            className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-surface-muted"
-          >
-            {item.label}
-          </Link>
-        ))}
-        {isLanding ? (
-          <a
-            href="#tools"
-            onClick={onNavigate}
-            className="mt-2 inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-          >
-            Explore Tools
-          </a>
-        ) : (
-          <Button asChild size="lg" className="mt-2 w-full">
-            <Link to="/tools" onClick={onNavigate}>
-              Explore Tools
+        {mainNav.map((item) =>
+          item.label === "Tools" ? (
+            <a
+              key={item.to}
+              href="/#tools"
+              onClick={onNavigate}
+              className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-surface-muted"
+            >
+              {item.label}
+            </a>
+          ) : (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={onNavigate}
+              className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-surface-muted"
+            >
+              {item.label}
             </Link>
-          </Button>
+          ),
         )}
       </nav>
     </div>

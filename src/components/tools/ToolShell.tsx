@@ -14,11 +14,11 @@ export function ToolShell({
   return (
     <section className="section-x py-10 sm:py-16">
       <Link
-        to="/tools"
+        to="/"
         className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-primary-soft hover:text-primary-strong"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
-        Back to Tools
+        Back to Home
       </Link>
 
       <header className="mt-5 max-w-2xl">
