@@ -16,7 +16,9 @@ export function CTASection() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link to="/tools">Explore PDF Tools</Link>
+                <Link to="/" hash="tools">
+                  Explore PDF Tools
+                </Link>
               </Button>
               <Button asChild variant="secondary" size="lg" className="w-full sm:w-auto">
                 <Link to="/how-it-works">How It Works</Link>

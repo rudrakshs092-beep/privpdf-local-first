@@ -12,13 +12,14 @@ export function ToolShell({
   children: ReactNode;
 }) {
   return (
-    <section className="section-x py-10 sm:py-16">
+    <section className="tool-shell section-x py-10 sm:py-16">
       <Link
         to="/"
-        className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-primary-soft hover:text-primary-strong"
+        hash="tools"
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-primary-soft hover:text-primary-strong"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
-        Back to Home
+        All Tools
       </Link>
 
       <header className="mt-5 max-w-2xl">

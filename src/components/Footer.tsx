@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
 
 const productLinks = [
-  { label: "Tools", to: "/tools" as const },
+  { label: "Tools", to: "/#tools" as const },
   { label: "How It Works", to: "/how-it-works" as const },
   { label: "Privacy", to: "/privacy" as const },
   { label: "Security", to: "/security" as const },
@@ -41,13 +41,7 @@ export function Footer() {
   );
 }
 
-function FooterColumn({
-  title,
-  links,
-}: {
-  title: string;
-  links: { label: string; to: string }[];
-}) {
+function FooterColumn({ title, links }: { title: string; links: { label: string; to: string }[] }) {
   return (
     <nav aria-label={title}>
       <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -56,12 +50,21 @@ function FooterColumn({
       <ul className="mt-4 space-y-2.5">
         {links.map((link) => (
           <li key={link.label}>
-            <Link
-              to={link.to}
-              className="text-sm text-foreground/80 transition-colors hover:text-primary-strong"
-            >
-              {link.label}
-            </Link>
+            {link.label === "Tools" ? (
+              <a
+                href={link.to}
+                className="inline-flex min-h-10 items-center text-sm text-foreground/80 transition-colors hover:text-primary-strong"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                to={link.to}
+                className="inline-flex min-h-10 items-center text-sm text-foreground/80 transition-colors hover:text-primary-strong"
+              >
+                {link.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

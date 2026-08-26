@@ -254,6 +254,8 @@ html[data-landing-theme="dark"] .landing-header {
 }
 .landing-search button {
   display: grid;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
   place-items: center;
   color: var(--landing-muted);
 }

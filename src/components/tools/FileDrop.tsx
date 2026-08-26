@@ -37,7 +37,7 @@ export function FileDrop({
         handle(event.dataTransfer.files);
       }}
       className={cn(
-        "flex flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-5 py-10 text-center transition-colors",
+        "flex min-h-56 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-4 py-10 text-center transition-colors sm:px-5",
         over && "border-primary bg-primary-soft",
       )}
     >
@@ -49,7 +49,7 @@ export function FileDrop({
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
-        className="mt-5 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong hover:text-background"
+        className="mt-5 inline-flex min-h-11 max-w-full items-center rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong hover:text-background"
       >
         Choose file{multiple ? "s" : ""}
       </button>
