@@ -11,7 +11,7 @@ export function Hero() {
             Simple PDF tools for everyday files.
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-            Your files stay safe on your device. No upload needed.
+            Easy PDF tools that work directly in your browser. No account required.
           </p>
           <Link
             to="/how-it-works"

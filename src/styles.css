@@ -6,7 +6,7 @@
 
 /*
  * PrivPDF design system.
- * Brand: black/deep charcoal and deep blue, premium, minimal, privacy-first.
+ * Brand: light, calm teal, clean, minimal, privacy-first.
  * Change brand colors here only — never hardcode colors in components.
  */
 
@@ -42,18 +42,18 @@
   --color-ring: var(--ring);
   --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 8px 24px -16px rgb(37 99 235 / 0.16);
-  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.06), 0 18px 36px -20px rgb(37 99 235 / 0.2);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 8px 24px -16px rgb(22 160 133 / 0.16);
+  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.06), 0 18px 36px -20px rgb(22 160 133 / 0.2);
 }
 
 :root {
   --radius: 0.75rem;
 
   /* Brand */
-  --primary: #2563eb;
-  --primary-strong: #1d4ed8;
+  --primary: #16a085;
+  --primary-strong: #0f766e;
   --primary-foreground: #ffffff;
-  --primary-soft: #eff6ff;
+  --primary-soft: #e8f6f3;
 
   /* Neutrals */
   --background: #f8fafc;
@@ -68,14 +68,14 @@
   --secondary-foreground: #334155;
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --accent: #eff6ff;
-  --accent-foreground: #1d4ed8;
+  --accent: #e8f6f3;
+  --accent-foreground: #0f766e;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #dbe4f0;
   --border-strong: #bfd0e6;
   --input: #dbe4f0;
-  --ring: #2563eb;
+  --ring: #16a085;
 }
 
 .dark {
@@ -87,20 +87,20 @@
   --card-foreground: #e5edf9;
   --popover: #111c30;
   --popover-foreground: #e5edf9;
-  --primary: #3b82f6;
-  --primary-strong: #60a5fa;
-  --primary-foreground: #ffffff;
-  --primary-soft: #172554;
+  --primary: #2dd4bf;
+  --primary-strong: #5eead4;
+  --primary-foreground: #042f2e;
+  --primary-soft: #123b3a;
   --secondary: #16233a;
-  --secondary-foreground: #dbeafe;
+  --secondary-foreground: #ccfbf1;
   --muted: #16233a;
   --muted-foreground: #9aabc2;
-  --accent: #172554;
-  --accent-foreground: #bfdbfe;
+  --accent: #123b3a;
+  --accent-foreground: #99f6e4;
   --border: #263650;
   --border-strong: #3b4f70;
   --input: #263650;
-  --ring: #60a5fa;
+  --ring: #5eead4;
 }
 
 @layer base {
@@ -152,7 +152,7 @@
   background-size: 48px 48px;
 }
 
-/* Landing page visual system: scoped so existing PDF tools keep their established UI. */
+/* Landing page visual system: shared calm teal identity across the product. */
 .site-header {
   position: sticky;
   top: 0;
@@ -166,7 +166,7 @@
   --landing-text: #0f172a;
   --landing-muted: #475569;
   --landing-border: #dbe3ee;
-  --landing-blue: #2563eb;
+  --landing-blue: #16a085;
   background: color-mix(in srgb, var(--landing-bg) 92%, transparent);
   color: var(--landing-text);
   border-color: var(--landing-border);
@@ -178,7 +178,7 @@ html[data-landing-theme="dark"] .landing-header {
   --landing-text: #e5edf9;
   --landing-muted: #9aabc2;
   --landing-border: #263650;
-  --landing-blue: #3b82f6;
+  --landing-blue: #2dd4bf;
   background: var(--landing-bg);
   color: var(--landing-text);
 }
@@ -192,7 +192,7 @@ html[data-landing-theme="dark"] .landing-header {
   --landing-text: #0f172a;
   --landing-muted: #475569;
   --landing-border: #dbe3ee;
-  --landing-blue: #2563eb;
+  --landing-blue: #16a085;
   background: var(--landing-bg);
   color: var(--landing-text);
 }
