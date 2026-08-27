@@ -44,7 +44,11 @@ export function ToolShell({
 export function ToolError({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+    <p
+      role="alert"
+      aria-live="assertive"
+      className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+    >
       {message}
     </p>
   );

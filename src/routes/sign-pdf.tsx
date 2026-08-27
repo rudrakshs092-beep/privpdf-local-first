@@ -1,19 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Eraser, FileSignature, Grip, Loader2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
 import { ToolError, ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
-import { baseName, canvasToBlob, downloadBlob, friendlyPdfError, loadPdfDocument, loadPdfLib, renderThumbnails } from "@/lib/pdf/client";
+import {
+  baseName,
+  canvasToBlob,
+  downloadBlob,
+  friendlyPdfError,
+  loadPdfDocument,
+  loadPdfLib,
+  renderThumbnails,
+} from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/sign-pdf")({
   head: () => ({
     meta: [
       { title: "Sign PDF — PrivPDF" },
-      { name: "description", content: "Add a visible drawn signature to a PDF locally in your browser." },
+      {
+        name: "description",
+        content: "Add a visible drawn signature to a PDF locally in your browser.",
+      },
       { property: "og:title", content: "Sign PDF — PrivPDF" },
-      { property: "og:description", content: "Add a visible drawn signature to a PDF locally in your browser." },
+      {
+        property: "og:description",
+        content: "Add a visible drawn signature to a PDF locally in your browser.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -53,7 +67,12 @@ function Page() {
   const signatureCanvasRef = useRef<HTMLCanvasElement>(null);
   const drawingRef = useRef(false);
   const previewRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef<{ action: DragAction; startX: number; startY: number; position: SignaturePosition } | null>(null);
+  const dragRef = useRef<{
+    action: DragAction;
+    startX: number;
+    startY: number;
+    position: SignaturePosition;
+  } | null>(null);
 
   const selectFile = async (files: File[]) => {
     const next = files[0];
@@ -81,11 +100,13 @@ function Page() {
       const urls = await renderThumbnails(nextBytes, 480);
       if (urls.length === 0) throw new Error("This PDF has no pages.");
       const dimensions = await Promise.all(urls.map(readImageSize));
-      setPages(urls.map((url, index) => {
-        const size = dimensions[index];
-        if (!size) throw new Error("Could not prepare the page preview.");
-        return { pageNumber: index + 1, url, ...size };
-      }));
+      setPages(
+        urls.map((url, index) => {
+          const size = dimensions[index];
+          if (!size) throw new Error("Could not prepare the page preview.");
+          return { pageNumber: index + 1, url, ...size };
+        }),
+      );
       setFile(next);
       setBytes(nextBytes);
     } catch (cause) {
@@ -181,6 +202,22 @@ function Page() {
     }
   };
 
+  const resizeSignatureWithKeyboard = (event: KeyboardEvent<HTMLSpanElement>) => {
+    const delta =
+      event.key === "ArrowRight" || event.key === "ArrowDown"
+        ? 0.02
+        : event.key === "ArrowLeft" || event.key === "ArrowUp"
+          ? -0.02
+          : 0;
+    if (!delta) return;
+    event.preventDefault();
+    setPosition((current) => ({
+      ...current,
+      width: Math.min(0.75, Math.max(0.12, current.width + delta)),
+      height: Math.min(0.5, Math.max(0.06, current.height + delta)),
+    }));
+  };
+
   const applySignature = async () => {
     if (!file || !bytes || !signature) return;
     setError(null);
@@ -220,29 +257,46 @@ function Page() {
     >
       <div className="space-y-6">
         {!file && !loading ? (
-          <FileDrop accept="application/pdf" label="Drop your PDF here" hint="One PDF file to sign locally." onFiles={selectFile} />
+          <FileDrop
+            accept="application/pdf"
+            label="Drop your PDF here"
+            hint="One PDF file to sign locally."
+            onFiles={selectFile}
+          />
         ) : loading ? (
           <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-5 py-10 text-center">
             <Loader2 className="size-6 animate-spin text-primary-strong" aria-hidden="true" />
             <p className="mt-3 text-sm font-semibold">Reading your PDF…</p>
-            <p className="mt-1 text-xs text-muted-foreground">Pages are processed locally in your browser.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Pages are processed locally in your browser.
+            </p>
           </div>
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
-              <FileSignature className="size-4 shrink-0 text-accent-foreground" aria-hidden="true" />
+              <FileSignature
+                className="size-4 shrink-0 text-accent-foreground"
+                aria-hidden="true"
+              />
               <span className="min-w-0 flex-1 truncate text-sm font-medium">{file?.name}</span>
-              <span className="text-xs text-muted-foreground">{pages.length} page{pages.length === 1 ? "" : "s"}</span>
-              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>Change PDF</Button>
+              <span className="text-xs text-muted-foreground">
+                {pages.length} page{pages.length === 1 ? "" : "s"}
+              </span>
+              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
+                Change PDF
+              </Button>
             </div>
 
             <div className="rounded-lg border border-amber-300/70 bg-amber-50 px-3 py-2.5 text-sm text-amber-950">
-              This creates a visible signature image, not a cryptographic digital signature. It does not verify identity or document integrity.
+              This creates a visible signature image, not a cryptographic digital signature. It does
+              not verify identity or document integrity.
             </div>
 
             <div>
               <h2 className="text-sm font-semibold">1. Draw your signature</h2>
-              <p className="mt-1 text-xs text-muted-foreground">Use your mouse, trackpad, finger or stylus.</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Use your mouse, trackpad, finger or stylus.
+              </p>
               <div className="mt-3 overflow-hidden rounded-xl border border-border bg-white">
                 <canvas
                   ref={signatureCanvasRef}
@@ -257,16 +311,25 @@ function Page() {
                 />
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
-                <Button variant="secondary" size="sm" onClick={clearSignature}><Eraser className="mr-2 size-4" aria-hidden="true" />Clear signature</Button>
-                <span className="inline-flex items-center text-xs text-muted-foreground">Draw inside the box above.</span>
+                <Button variant="secondary" size="sm" onClick={clearSignature}>
+                  <Eraser className="mr-2 size-4" aria-hidden="true" />
+                  Clear signature
+                </Button>
+                <span className="inline-flex items-center text-xs text-muted-foreground">
+                  Draw inside the box above.
+                </span>
               </div>
             </div>
 
             <div>
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <h2 className="text-sm font-semibold">2. Choose a page and place the signature</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">Drag the signature to move it. Drag the corner handle to resize it.</p>
+                  <h2 className="text-sm font-semibold">
+                    2. Choose a page and place the signature
+                  </h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Drag the signature to move it. Drag the corner handle to resize it.
+                  </p>
                 </div>
                 <label className="text-sm font-semibold">
                   Page to sign
@@ -275,7 +338,11 @@ function Page() {
                     onChange={(event) => setSelectedPage(Number(event.target.value))}
                     className="ml-2 h-10 rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {pages.map((page) => <option key={page.pageNumber} value={page.pageNumber}>Page {page.pageNumber}</option>)}
+                    {pages.map((page) => (
+                      <option key={page.pageNumber} value={page.pageNumber}>
+                        Page {page.pageNumber}
+                      </option>
+                    ))}
                   </select>
                 </label>
               </div>
@@ -286,23 +353,47 @@ function Page() {
                   className="relative mx-auto mt-4 max-w-2xl overflow-hidden rounded-xl border border-border bg-surface-muted p-2"
                   style={{ aspectRatio: `${currentPage.width} / ${currentPage.height}` }}
                 >
-                  <img src={currentPage.url} alt={`Preview of page ${currentPage.pageNumber}`} className="absolute inset-2 size-[calc(100%-1rem)] object-contain" />
+                  <img
+                    src={currentPage.url}
+                    alt={`Preview of page ${currentPage.pageNumber}`}
+                    className="absolute inset-2 size-[calc(100%-1rem)] object-contain"
+                  />
                   {signature && (
                     <div
                       className="absolute cursor-move touch-none border-2 border-dashed border-primary bg-white/20"
-                      style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, width: `${position.width * 100}%`, height: `${position.height * 100}%` }}
+                      style={{
+                        left: `${position.x * 100}%`,
+                        top: `${position.y * 100}%`,
+                        width: `${position.width * 100}%`,
+                        height: `${position.height * 100}%`,
+                      }}
                       onPointerDown={(event) => startDrag(event, "move")}
                       onPointerMove={dragSignature}
                       onPointerUp={finishDrag}
                       onPointerCancel={finishDrag}
                     >
-                      <img src={signature} alt="Signature preview" className="size-full object-contain" draggable={false} />
-                      <span className="absolute -left-2 -top-2 grid size-5 place-items-center rounded-full bg-primary text-primary-foreground" aria-hidden="true"><Grip className="size-3" /></span>
+                      <img
+                        src={signature}
+                        alt="Signature preview"
+                        className="size-full object-contain"
+                        draggable={false}
+                      />
+                      <span
+                        className="absolute -left-2 -top-2 grid size-5 place-items-center rounded-full bg-primary text-primary-foreground"
+                        aria-hidden="true"
+                      >
+                        <Grip className="size-3" />
+                      </span>
                       <span
                         role="slider"
                         aria-label="Resize signature"
+                        aria-valuemin={12}
+                        aria-valuemax={75}
+                        aria-valuenow={Math.round(position.width * 100)}
+                        aria-valuetext={`${Math.round(position.width * 100)}% wide`}
                         tabIndex={0}
                         className="absolute -bottom-2 -right-2 size-5 cursor-se-resize rounded-full border-2 border-background bg-primary"
+                        onKeyDown={resizeSignatureWithKeyboard}
                         onPointerDown={(event) => startDrag(event, "resize")}
                         onPointerMove={dragSignature}
                         onPointerUp={finishDrag}
@@ -322,9 +413,15 @@ function Page() {
                   onClick={() => setSelectedPage(page.pageNumber)}
                   className={`flex items-center gap-3 rounded-lg border p-2 text-left transition-colors ${selectedPage === page.pageNumber ? "border-primary-strong bg-primary-soft" : "border-border bg-surface hover:border-border-strong"}`}
                 >
-                  <img src={page.url} alt={`Thumbnail of page ${page.pageNumber}`} className="h-16 w-12 rounded border border-border object-contain" />
+                  <img
+                    src={page.url}
+                    alt={`Thumbnail of page ${page.pageNumber}`}
+                    className="h-16 w-12 rounded border border-border object-contain"
+                  />
                   <span className="text-sm font-semibold">Page {page.pageNumber}</span>
-                  {selectedPage === page.pageNumber && <Check className="ml-auto size-4 text-primary-strong" aria-hidden="true" />}
+                  {selectedPage === page.pageNumber && (
+                    <Check className="ml-auto size-4 text-primary-strong" aria-hidden="true" />
+                  )}
                 </button>
               ))}
             </div>

@@ -19,9 +19,15 @@ export const Route = createFileRoute("/compress-pdf")({
   head: () => ({
     meta: [
       { title: "Compress PDF — PrivPDF" },
-      { name: "description", content: "Shrink PDF file size in your browser, with no uploads and no watermarks." },
+      {
+        name: "description",
+        content: "Shrink PDF file size in your browser, with no uploads and no watermarks.",
+      },
       { property: "og:title", content: "Compress PDF — PrivPDF" },
-      { property: "og:description", content: "Shrink PDF file size in your browser, with no uploads and no watermarks." },
+      {
+        property: "og:description",
+        content: "Shrink PDF file size in your browser, with no uploads and no watermarks.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -87,7 +93,7 @@ function Page() {
   return (
     <ToolShell
       title="Compress PDF"
-      description="Reduce PDF file size for easier sharing. Pages are re-rendered and re-encoded on your device — nothing is uploaded."
+      description="Make your PDF smaller and easier to share. Your file is processed on your device."
     >
       {!file ? (
         <FileDrop
@@ -114,7 +120,7 @@ function Page() {
               }}
               disabled={busy}
             >
-              Change
+              Choose another PDF
             </Button>
           </div>
 
@@ -134,8 +140,8 @@ function Page() {
               ))}
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Each page is re-rendered as an image, so selectable text, links and vector detail are
-              replaced by a flat picture of the page. Keep the original if you need editable text.
+              Smaller files may look a little different and may not keep selectable text or links.
+              Keep the original if you need to edit the text.
             </p>
           </div>
 
