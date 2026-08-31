@@ -1,12 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FileText, Loader2, RefreshCcw } from "lucide-react";
+import { FileText, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { baseName, downloadBytes, formatBytes, friendlyPdfError, loadPdfDocument, loadPdfLib, renderThumbnails } from "@/lib/pdf/client";
+import {
+  baseName,
+  downloadBytes,
+  formatBytes,
+  friendlyPdfError,
+  loadPdfDocument,
+  loadPdfLib,
+  renderThumbnails,
+} from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/page-numbers")({
   head: () => ({
@@ -22,7 +31,8 @@ export const Route = createFileRoute("/page-numbers")({
   component: Page,
 });
 
-type NumberPosition = "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right";
+type NumberPosition =
+  "top-left" | "top-center" | "top-right" | "bottom-left" | "bottom-center" | "bottom-right";
 type NumberFormat = "number" | "page" | "of";
 
 const positions: { value: NumberPosition; label: string }[] = [
@@ -38,7 +48,13 @@ function isPdf(file: File) {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
 }
 
-function formatPageNumber(pageNumber: number, totalPages: number, startingNumber: number, skipFirst: number, format: NumberFormat) {
+function formatPageNumber(
+  pageNumber: number,
+  totalPages: number,
+  startingNumber: number,
+  skipFirst: number,
+  format: NumberFormat,
+) {
   const number = startingNumber + (pageNumber - 1 - skipFirst);
   if (format === "page") return `Page ${number}`;
   if (format === "of") return `${number} of ${totalPages - skipFirst}`;
@@ -60,12 +76,18 @@ function Page() {
   const [skipFirst, setSkipFirst] = useState("0");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const pick = async (files: File[]) => {
     const next = files[0];
     if (!next) return;
     setError(null);
+    setSuccess(null);
+    setProgress(0);
+    setStatus(null);
     setFile(null);
     setBytes(null);
     setThumbnails([]);
@@ -80,15 +102,26 @@ function Page() {
     }
 
     setLoading(true);
+    setProgress(15);
+    setStatus("Reading your PDF…");
     try {
       const nextBytes = await next.arrayBuffer();
+      setProgress(40);
       const urls = await renderThumbnails(nextBytes, 240);
+      setProgress(80);
       if (urls.length === 0) throw new Error("This PDF has no pages.");
       setFile(next);
       setBytes(nextBytes);
       setThumbnails(urls);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `PDF loaded successfully — ${urls.length} page${urls.length === 1 ? "" : "s"} ready.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, next.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setLoading(false);
     }
@@ -98,6 +131,9 @@ function Page() {
     setFile(null);
     setBytes(null);
     setThumbnails([]);
+    setProgress(0);
+    setStatus(null);
+    setSuccess(null);
     setError(null);
   };
 
@@ -119,7 +155,10 @@ function Page() {
     }
 
     setError(null);
+    setSuccess(null);
     setBusy(true);
+    setProgress(10);
+    setStatus("Preparing page numbers…");
     try {
       const { StandardFonts, rgb } = await loadPdfLib();
       const pdf = await loadPdfDocument(bytes, file.name);
@@ -134,14 +173,26 @@ function Page() {
         const height = page.getHeight();
         const textWidth = font.widthOfTextAtSize(text, fontSize);
         const [, horizontal] = position.split("-");
-        const x = horizontal === "left" ? margin : horizontal === "right" ? width - margin - textWidth : (width - textWidth) / 2;
+        const x =
+          horizontal === "left"
+            ? margin
+            : horizontal === "right"
+              ? width - margin - textWidth
+              : (width - textWidth) / 2;
         const y = position.startsWith("top") ? height - margin - fontSize : margin;
         page.drawText(text, { x, y, size: fontSize, font, color: rgb(0.25, 0.25, 0.25) });
+        setProgress(10 + ((index + 1) / pdf.getPageCount()) * 75);
+        setStatus(`Numbering page ${index + 1} of ${pdf.getPageCount()}…`);
       });
 
       downloadBytes(await pdf.save(), `${baseName(file.name)}-numbered.pdf`);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(`Added page numbers and downloaded the ${pdf.getPageCount()}-page PDF.`);
     } catch (cause) {
       setError(friendlyPdfError(cause, file.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setBusy(false);
     }
@@ -157,32 +208,49 @@ function Page() {
     >
       <div className="space-y-6">
         {!file && !loading ? (
-          <FileDrop accept="application/pdf" label="Drop your PDF here" hint="One PDF file to number locally." onFiles={pick} />
-        ) : loading ? (
-          <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-5 py-10 text-center">
-            <Loader2 className="size-6 animate-spin text-primary-strong" aria-hidden="true" />
-            <p className="mt-3 text-sm font-semibold">Reading your PDF…</p>
-            <p className="mt-1 text-xs text-muted-foreground">Pages are processed locally in your browser.</p>
-          </div>
-        ) : (
+          <FileDrop
+            accept="application/pdf"
+            label="Drop your PDF here"
+            hint="One PDF file to number locally."
+            disabled={loading || busy}
+            onFiles={pick}
+          />
+        ) : loading ? null : (
           <>
             <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
               <FileText className="size-4 shrink-0 text-accent-foreground" aria-hidden="true" />
               <span className="min-w-0 flex-1 truncate text-sm font-medium">{file?.name}</span>
-              <span className="text-xs text-muted-foreground">{thumbnails.length} pages · {file ? formatBytes(file.size) : ""}</span>
-              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}><RefreshCcw className="mr-2 size-4" aria-hidden="true" />Change PDF</Button>
+              <span className="text-xs text-muted-foreground">
+                {thumbnails.length} pages · {file ? formatBytes(file.size) : ""}
+              </span>
+              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
+                <RefreshCcw className="mr-2 size-4" aria-hidden="true" />
+                Change PDF
+              </Button>
             </div>
 
             <div className="grid gap-4 rounded-xl border border-border bg-surface-muted p-4 sm:grid-cols-2">
               <label className="text-sm font-semibold">
                 Position
-                <select value={position} onChange={(event) => setPosition(event.target.value as NumberPosition)} className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  {positions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                <select
+                  value={position}
+                  onChange={(event) => setPosition(event.target.value as NumberPosition)}
+                  className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {positions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label className="text-sm font-semibold">
                 Format
-                <select value={format} onChange={(event) => setFormat(event.target.value as NumberFormat)} className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <select
+                  value={format}
+                  onChange={(event) => setFormat(event.target.value as NumberFormat)}
+                  className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <option value="number">1</option>
                   <option value="page">Page 1</option>
                   <option value="of">1 of N</option>
@@ -190,11 +258,22 @@ function Page() {
               </label>
               <label className="text-sm font-semibold">
                 Starting number
-                <Input type="number" min="1" step="1" value={startingNumber} onChange={(event) => setStartingNumber(event.target.value)} className="mt-2" />
+                <Input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={startingNumber}
+                  onChange={(event) => setStartingNumber(event.target.value)}
+                  className="mt-2"
+                />
               </label>
               <label className="text-sm font-semibold">
                 Skip first pages
-                <select value={skipFirst} onChange={(event) => setSkipFirst(event.target.value)} className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <select
+                  value={skipFirst}
+                  onChange={(event) => setSkipFirst(event.target.value)}
+                  className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <option value="0">Number every page</option>
                   <option value="1">Skip first page</option>
                   <option value="2">Skip first 2 pages</option>
@@ -206,23 +285,44 @@ function Page() {
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <h2 className="text-sm font-semibold">Preview</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">Review the placement before generating the numbered PDF.</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Review the placement before generating the numbered PDF.
+                  </p>
                 </div>
-                <span className="text-xs text-muted-foreground">{thumbnails.length - (Number.isInteger(skip) ? Math.min(skip, thumbnails.length) : 0)} numbered pages</span>
+                <span className="text-xs text-muted-foreground">
+                  {thumbnails.length -
+                    (Number.isInteger(skip) ? Math.min(skip, thumbnails.length) : 0)}{" "}
+                  numbered pages
+                </span>
               </div>
               <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {thumbnails.map((url, index) => {
-                  const numbered = Number.isInteger(skip) && index >= skip && Number.isInteger(starting);
-                  const text = numbered ? formatPageNumber(index + 1, thumbnails.length, starting, skip, format) : "Skipped";
+                  const numbered =
+                    Number.isInteger(skip) && index >= skip && Number.isInteger(starting);
+                  const text = numbered
+                    ? formatPageNumber(index + 1, thumbnails.length, starting, skip, format)
+                    : "Skipped";
                   return (
-                    <div key={index} className="relative overflow-hidden rounded-xl border border-border bg-surface p-2">
+                    <div
+                      key={index}
+                      className="relative overflow-hidden rounded-xl border border-border bg-surface p-2"
+                    >
                       <div className="relative overflow-hidden rounded-lg bg-surface-muted">
-                        <img src={url} alt={`Preview of page ${index + 1}`} className="block aspect-[4/3] size-full object-contain" />
-                        <span className={`absolute rounded bg-background/90 px-1.5 py-0.5 text-[10px] font-semibold shadow-sm ${positionClasses(position)} ${numbered ? "text-foreground" : "text-muted-foreground"}`}>
+                        <img
+                          src={url}
+                          alt={`Preview of page ${index + 1}`}
+                          className="block aspect-[4/3] size-full object-contain"
+                        />
+                        <span
+                          className={`absolute rounded bg-background/90 px-1.5 py-0.5 text-[10px] font-semibold shadow-sm ${positionClasses(position)} ${numbered ? "text-foreground" : "text-muted-foreground"}`}
+                        >
                           {text}
                         </span>
                       </div>
-                      <p className="px-1 pt-2 text-xs font-semibold text-muted-foreground">Page {index + 1}{!numbered && " · skipped"}</p>
+                      <p className="px-1 pt-2 text-xs font-semibold text-muted-foreground">
+                        Page {index + 1}
+                        {!numbered && " · skipped"}
+                      </p>
                     </div>
                   );
                 })}
@@ -231,10 +331,16 @@ function Page() {
           </>
         )}
 
-        <ToolError message={error} />
+        <ToolFeedback
+          loading={loading || busy}
+          progress={progress}
+          message={status}
+          success={success}
+          error={error}
+        />
 
         {file && !loading && (
-          <Button onClick={generate} disabled={busy || thumbnails.length === 0}>
+          <Button onClick={generate} disabled={busy || loading || thumbnails.length === 0}>
             {busy ? "Adding page numbers…" : "Add page numbers and download"}
           </Button>
         )}

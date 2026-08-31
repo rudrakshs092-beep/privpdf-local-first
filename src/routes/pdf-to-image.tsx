@@ -1,19 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Download, FileText, ImageDown, Loader2 } from "lucide-react";
+import { Check, Download, FileText, ImageDown } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
-import { baseName, canvasToBlob, downloadBlob, formatBytes, friendlyPdfError, renderPageToCanvas, renderThumbnails } from "@/lib/pdf/client";
+import {
+  baseName,
+  canvasToBlob,
+  downloadBlob,
+  formatBytes,
+  friendlyPdfError,
+  renderPageToCanvas,
+  renderThumbnails,
+} from "@/lib/pdf/client";
 
 export const Route = createFileRoute("/pdf-to-image")({
   head: () => ({
     meta: [
       { title: "PDF to Image — PrivPDF" },
-      { name: "description", content: "Export PDF pages as PNG or JPG images locally in your browser." },
+      {
+        name: "description",
+        content: "Export PDF pages as PNG or JPG images locally in your browser.",
+      },
       { property: "og:title", content: "PDF to Image — PrivPDF" },
-      { property: "og:description", content: "Export PDF pages as PNG or JPG images locally in your browser." },
+      {
+        property: "og:description",
+        content: "Export PDF pages as PNG or JPG images locally in your browser.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -51,12 +66,18 @@ function Page() {
   const [quality, setQuality] = useState("0.8");
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const selectFile = async (files: File[]) => {
     const next = files[0];
     if (!next) return;
     setError(null);
+    setSuccess(null);
+    setProgress(0);
+    setStatus(null);
     setFile(null);
     setBytes(null);
     setThumbnails([]);
@@ -72,17 +93,28 @@ function Page() {
     }
 
     setLoading(true);
+    setProgress(15);
+    setStatus("Reading your PDF…");
     try {
       const nextBytes = await next.arrayBuffer();
+      setProgress(40);
       const urls = await renderThumbnails(nextBytes, 220);
+      setProgress(80);
       if (urls.length === 0) throw new Error("This PDF has no pages.");
       const pages = urls.map((url, index) => ({ pageNumber: index + 1, url }));
       setFile(next);
       setBytes(nextBytes);
       setThumbnails(pages);
       setSelectedPages(new Set(pages.map((page) => page.pageNumber)));
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `PDF loaded successfully — ${pages.length} page${pages.length === 1 ? "" : "s"} ready for export.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, next.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setLoading(false);
     }
@@ -93,6 +125,9 @@ function Page() {
     setBytes(null);
     setThumbnails([]);
     setSelectedPages(new Set());
+    setProgress(0);
+    setStatus(null);
+    setSuccess(null);
     setError(null);
   };
 
@@ -111,21 +146,37 @@ function Page() {
   const exportImages = async () => {
     if (!file || !bytes || selectedPages.size === 0) return;
     setError(null);
+    setSuccess(null);
     setExporting(true);
+    setProgress(10);
+    setStatus("Preparing selected pages…");
     try {
       const extension = format === "png" ? "png" : "jpg";
       const mime = format === "png" ? "image/png" : "image/jpeg";
       const orderedPages = thumbnails.filter((page) => selectedPages.has(page.pageNumber));
-      for (const page of orderedPages) {
+      for (const [index, page] of orderedPages.entries()) {
+        setStatus(`Exporting page ${index + 1} of ${orderedPages.length}…`);
         const canvas = await renderPageToCanvas(bytes, page.pageNumber, Number(scale));
-        const blob = await canvasToBlob(canvas, mime, format === "jpg" ? Number(quality) : undefined);
+        const blob = await canvasToBlob(
+          canvas,
+          mime,
+          format === "jpg" ? Number(quality) : undefined,
+        );
         downloadBlob(blob, `${baseName(file.name)}-page-${page.pageNumber}.${extension}`);
         canvas.width = 0;
         canvas.height = 0;
+        setProgress(10 + ((index + 1) / orderedPages.length) * 85);
         await new Promise((resolve) => setTimeout(resolve, 120));
       }
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `Exported ${orderedPages.length} image${orderedPages.length === 1 ? "" : "s"} and downloaded them.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, file.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setExporting(false);
     }
@@ -138,20 +189,21 @@ function Page() {
     >
       <div className="space-y-6">
         {!file && !loading ? (
-          <FileDrop accept="application/pdf" label="Drop your PDF here" hint="One PDF file to export as images." onFiles={selectFile} />
-        ) : loading ? (
-          <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-5 py-10 text-center">
-            <Loader2 className="size-6 animate-spin text-primary-strong" aria-hidden="true" />
-            <p className="mt-3 text-sm font-semibold">Reading your PDF…</p>
-            <p className="mt-1 text-xs text-muted-foreground">Pages are processed locally in your browser.</p>
-          </div>
-        ) : (
+          <FileDrop
+            accept="application/pdf"
+            label="Drop your PDF here"
+            hint="One PDF file to export as images."
+            disabled={loading || exporting}
+            onFiles={selectFile}
+          />
+        ) : loading ? null : (
           <>
             <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
               <FileText className="size-4 shrink-0 text-accent-foreground" aria-hidden="true" />
               <span className="min-w-0 flex-1 truncate text-sm font-medium">{file?.name}</span>
               <span className="text-xs text-muted-foreground">
-                {thumbnails.length} page{thumbnails.length === 1 ? "" : "s"} · {file ? formatBytes(file.size) : ""}
+                {thumbnails.length} page{thumbnails.length === 1 ? "" : "s"} ·{" "}
+                {file ? formatBytes(file.size) : ""}
               </span>
               <Button variant="secondary" size="sm" onClick={reset} disabled={exporting}>
                 Change PDF
@@ -166,10 +218,20 @@ function Page() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="secondary" size="sm" onClick={selectAll} disabled={exporting || selectedPages.size === thumbnails.length}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={selectAll}
+                  disabled={exporting || selectedPages.size === thumbnails.length}
+                >
                   Select all
                 </Button>
-                <Button variant="secondary" size="sm" onClick={clearSelection} disabled={exporting || selectedPages.size === 0}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={clearSelection}
+                  disabled={exporting || selectedPages.size === 0}
+                >
                   Clear selection
                 </Button>
               </div>
@@ -189,11 +251,17 @@ function Page() {
                     }`}
                   >
                     <div className="relative flex aspect-[4/3] items-center justify-center bg-surface-muted p-3">
-                      <img src={page.url} alt={`Preview of page ${page.pageNumber}`} className="size-full object-contain" />
+                      <img
+                        src={page.url}
+                        alt={`Preview of page ${page.pageNumber}`}
+                        className="size-full object-contain"
+                      />
                       <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2 py-1 text-xs font-bold shadow-sm">
                         Page {page.pageNumber}
                       </span>
-                      <span className={`absolute right-2 top-2 grid size-6 place-items-center rounded-full shadow-sm ${selected ? "bg-primary text-primary-foreground" : "bg-background/90 text-muted-foreground"}`}>
+                      <span
+                        className={`absolute right-2 top-2 grid size-6 place-items-center rounded-full shadow-sm ${selected ? "bg-primary text-primary-foreground" : "bg-background/90 text-muted-foreground"}`}
+                      >
                         {selected ? <Check className="size-4" aria-hidden="true" /> : null}
                       </span>
                     </div>
@@ -224,7 +292,11 @@ function Page() {
                   onChange={(event) => setScale(event.target.value)}
                   className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  {SCALE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  {SCALE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label className="text-sm font-semibold">
@@ -235,9 +307,15 @@ function Page() {
                   disabled={format === "png"}
                   className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {QUALITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  {QUALITY_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
-                <span className="mt-1 block text-xs font-normal text-muted-foreground">Only applies to JPG.</span>
+                <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                  Only applies to JPG.
+                </span>
               </label>
             </div>
 
@@ -248,11 +326,22 @@ function Page() {
           </>
         )}
 
-        <ToolError message={error} />
+        <ToolFeedback
+          loading={loading || exporting}
+          progress={progress}
+          message={status}
+          success={success}
+          error={error}
+        />
 
         {file && !loading && (
-          <Button onClick={exportImages} disabled={exporting || selectedPages.size === 0}>
-            {exporting ? "Exporting images…" : `Download ${selectedPages.size || "selected"} image${selectedPages.size === 1 ? "" : "s"}`}
+          <Button
+            onClick={exportImages}
+            disabled={exporting || loading || selectedPages.size === 0}
+          >
+            {exporting
+              ? "Exporting images…"
+              : `Download ${selectedPages.size || "selected"} image${selectedPages.size === 1 ? "" : "s"}`}
           </Button>
         )}
       </div>

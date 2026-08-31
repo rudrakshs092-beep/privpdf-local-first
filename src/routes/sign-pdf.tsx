@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Eraser, FileSignature, Grip, Loader2 } from "lucide-react";
+import { Check, Eraser, FileSignature, Grip } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
@@ -63,6 +64,9 @@ function Page() {
   const [position, setPosition] = useState<SignaturePosition>(INITIAL_POSITION);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const signatureCanvasRef = useRef<HTMLCanvasElement>(null);
   const drawingRef = useRef(false);
@@ -78,6 +82,9 @@ function Page() {
     const next = files[0];
     if (!next) return;
     setError(null);
+    setSuccess(null);
+    setProgress(0);
+    setStatus(null);
     setFile(null);
     setBytes(null);
     setPages([]);
@@ -95,9 +102,13 @@ function Page() {
     }
 
     setLoading(true);
+    setProgress(15);
+    setStatus("Reading your PDF…");
     try {
       const nextBytes = await next.arrayBuffer();
+      setProgress(35);
       const urls = await renderThumbnails(nextBytes, 480);
+      setProgress(65);
       if (urls.length === 0) throw new Error("This PDF has no pages.");
       const dimensions = await Promise.all(urls.map(readImageSize));
       setPages(
@@ -109,8 +120,15 @@ function Page() {
       );
       setFile(next);
       setBytes(nextBytes);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `PDF loaded successfully — ${urls.length} page${urls.length === 1 ? "" : "s"} ready to sign.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, next.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setLoading(false);
     }
@@ -123,6 +141,9 @@ function Page() {
     setSignature(null);
     setPosition(INITIAL_POSITION);
     setSelectedPage(1);
+    setProgress(0);
+    setStatus(null);
+    setSuccess(null);
     setError(null);
   };
 
@@ -221,12 +242,17 @@ function Page() {
   const applySignature = async () => {
     if (!file || !bytes || !signature) return;
     setError(null);
+    setSuccess(null);
     setBusy(true);
+    setProgress(10);
+    setStatus("Preparing the signed PDF…");
     try {
       const { degrees } = await loadPdfLib();
+      setProgress(35);
       const pdf = await loadPdfDocument(bytes, file.name);
       const target = pdf.getPage(selectedPage - 1);
       const signatureImage = await pdf.embedPng(signature);
+      setProgress(65);
       const pageWidth = target.getWidth();
       const pageHeight = target.getHeight();
       target.drawImage(signatureImage, {
@@ -237,12 +263,18 @@ function Page() {
         rotate: degrees(0),
       });
       const output = await pdf.save();
+      setProgress(85);
       const outputCopy = new Uint8Array(output.byteLength);
       outputCopy.set(output);
       const blob = new Blob([outputCopy.buffer], { type: "application/pdf" });
       downloadBlob(blob, `${baseName(file.name)}-signed.pdf`);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(`Signed page ${selectedPage} and downloaded the finished PDF.`);
     } catch (cause) {
       setError(friendlyPdfError(cause, file.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setBusy(false);
     }
@@ -261,17 +293,10 @@ function Page() {
             accept="application/pdf"
             label="Drop your PDF here"
             hint="One PDF file to sign locally."
+            disabled={loading || busy}
             onFiles={selectFile}
           />
-        ) : loading ? (
-          <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-5 py-10 text-center">
-            <Loader2 className="size-6 animate-spin text-primary-strong" aria-hidden="true" />
-            <p className="mt-3 text-sm font-semibold">Reading your PDF…</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Pages are processed locally in your browser.
-            </p>
-          </div>
-        ) : (
+        ) : loading ? null : (
           <>
             <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
               <FileSignature
@@ -282,7 +307,7 @@ function Page() {
               <span className="text-xs text-muted-foreground">
                 {pages.length} page{pages.length === 1 ? "" : "s"}
               </span>
-              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
+              <Button variant="secondary" size="sm" onClick={reset} disabled={busy || loading}>
                 Change PDF
               </Button>
             </div>
@@ -428,7 +453,13 @@ function Page() {
           </>
         )}
 
-        <ToolError message={error} />
+        <ToolFeedback
+          loading={loading || busy}
+          progress={progress}
+          message={status}
+          success={success}
+          error={error}
+        />
 
         {file && !loading && (
           <Button onClick={applySignature} disabled={busy || !signature}>

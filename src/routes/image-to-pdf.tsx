@@ -3,7 +3,8 @@ import { ArrowDown, ArrowUp, FileImage, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import { downloadBytes, friendlyPdfError, loadPdfLib } from "@/lib/pdf/client";
 
@@ -11,7 +12,10 @@ export const Route = createFileRoute("/image-to-pdf")({
   head: () => ({
     meta: [
       { title: "Image to PDF — PrivPDF" },
-      { name: "description", content: "Convert JPG, JPEG and PNG images into a PDF locally in your browser." },
+      {
+        name: "description",
+        content: "Convert JPG, JPEG and PNG images into a PDF locally in your browser.",
+      },
       { property: "og:title", content: "Image to PDF — PrivPDF" },
       { property: "og:description", content: "Convert images into a PDF locally in your browser." },
       { property: "og:type", content: "website" },
@@ -46,14 +50,17 @@ const MARGINS: Record<Margin, number> = {
 };
 
 function isSupportedImage(file: File) {
-  return file.type === "image/jpeg" || file.type === "image/png" || /\.(jpe?g|png)$/i.test(file.name);
+  return (
+    file.type === "image/jpeg" || file.type === "image/png" || /\.(jpe?g|png)$/i.test(file.name)
+  );
 }
 
 function readImage(file: File, id: number): Promise<ImageItem> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const image = new Image();
-    image.onload = () => resolve({ id, file, url, width: image.naturalWidth, height: image.naturalHeight });
+    image.onload = () =>
+      resolve({ id, file, url, width: image.naturalWidth, height: image.naturalHeight });
     image.onerror = () => {
       URL.revokeObjectURL(url);
       reject(new Error(`Could not read ${file.name}. Choose a valid JPG, JPEG or PNG image.`));
@@ -62,7 +69,11 @@ function readImage(file: File, id: number): Promise<ImageItem> {
   });
 }
 
-function getPageDimensions(item: ImageItem, pageSize: PageSize, orientation: Orientation): [number, number] {
+function getPageDimensions(
+  item: ImageItem,
+  pageSize: PageSize,
+  orientation: Orientation,
+): [number, number] {
   let dimensions: [number, number];
   if (pageSize === "original") {
     const scale = 72 / 96;
@@ -71,8 +82,10 @@ function getPageDimensions(item: ImageItem, pageSize: PageSize, orientation: Ori
     dimensions = PAGE_SIZES[pageSize];
   }
 
-  if (orientation === "portrait" && dimensions[0] > dimensions[1]) dimensions = [dimensions[1], dimensions[0]];
-  if (orientation === "landscape" && dimensions[1] > dimensions[0]) dimensions = [dimensions[1], dimensions[0]];
+  if (orientation === "portrait" && dimensions[0] > dimensions[1])
+    dimensions = [dimensions[1], dimensions[0]];
+  if (orientation === "landscape" && dimensions[1] > dimensions[0])
+    dimensions = [dimensions[1], dimensions[0]];
   if (orientation === "auto" && item.width > item.height && dimensions[1] > dimensions[0]) {
     dimensions = [dimensions[1], dimensions[0]];
   }
@@ -104,14 +117,21 @@ function Page() {
   const [pageSize, setPageSize] = useState<PageSize>("a4");
   const [orientation, setOrientation] = useState<Orientation>("auto");
   const [margin, setMargin] = useState<Margin>("small");
+  const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const nextId = useRef(0);
 
   const addImages = async (files: File[]) => {
     setError(null);
+    setSuccess(null);
     const valid = files.filter(isSupportedImage);
     if (valid.length === 0) {
+      setProgress(0);
+      setStatus(null);
       setError("Choose one or more JPG, JPEG or PNG images.");
       return;
     }
@@ -119,11 +139,26 @@ function Page() {
       setError("Some files were skipped because they were not JPG, JPEG or PNG images.");
     }
 
+    setLoading(true);
+    setProgress(20);
+    setStatus(`Reading ${valid.length} image${valid.length === 1 ? "" : "s"}…`);
     try {
       const loaded = await Promise.all(valid.map((file) => readImage(file, nextId.current++)));
+      setProgress(85);
       setImages((current) => [...current, ...loaded]);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `${loaded.length} image${loaded.length === 1 ? "" : "s"} added and ready for conversion.`,
+      );
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Could not read one of the selected images.");
+      setError(
+        cause instanceof Error ? cause.message : "Could not read one of the selected images.",
+      );
+      setProgress(0);
+      setStatus(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,32 +187,48 @@ function Page() {
   const reset = () => {
     images.forEach((item) => URL.revokeObjectURL(item.url));
     setImages([]);
+    setProgress(0);
+    setStatus(null);
+    setSuccess(null);
     setError(null);
   };
 
   const generatePdf = async () => {
     if (images.length === 0) return;
     setError(null);
+    setSuccess(null);
     setBusy(true);
+    setProgress(10);
+    setStatus("Preparing your images…");
     try {
       const { PDFDocument } = await loadPdfLib();
       const pdf = await PDFDocument.create();
       const pageMargin = MARGINS[margin];
 
-      for (const item of images) {
+      for (const [index, item] of images.entries()) {
+        setStatus(`Converting image ${index + 1} of ${images.length}…`);
         const [pageWidth, pageHeight] = getPageDimensions(item, pageSize, orientation);
         const page = pdf.addPage([pageWidth, pageHeight]);
         const bytes = new Uint8Array(await item.file.arrayBuffer());
-        const embedded = item.file.type === "image/png" || /\.png$/i.test(item.file.name)
-          ? await pdf.embedPng(bytes)
-          : await pdf.embedJpg(bytes);
+        const embedded =
+          item.file.type === "image/png" || /\.png$/i.test(item.file.name)
+            ? await pdf.embedPng(bytes)
+            : await pdf.embedJpg(bytes);
         const fitted = fitImage(embedded.width, embedded.height, pageWidth, pageHeight, pageMargin);
         page.drawImage(embedded, fitted);
+        setProgress(10 + ((index + 1) / images.length) * 80);
       }
 
       downloadBytes(await pdf.save(), "privpdf-images.pdf");
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `Converted ${images.length} image${images.length === 1 ? "" : "s"} into a PDF and downloaded it.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, "the selected images"));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setBusy(false);
     }
@@ -193,6 +244,7 @@ function Page() {
           <FileDrop
             accept="image/jpeg,image/png,.jpg,.jpeg,.png"
             multiple
+            disabled={loading || busy}
             label="Drop your images here"
             hint="Choose one or more JPG, JPEG or PNG files."
             onFiles={addImages}
@@ -203,7 +255,7 @@ function Page() {
               <span className="min-w-0 flex-1 text-sm font-medium">
                 {images.length} image{images.length === 1 ? "" : "s"} selected
               </span>
-              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
+              <Button variant="secondary" size="sm" onClick={reset} disabled={busy || loading}>
                 Clear all
               </Button>
             </div>
@@ -211,6 +263,7 @@ function Page() {
             <FileDrop
               accept="image/jpeg,image/png,.jpg,.jpeg,.png"
               multiple
+              disabled={loading || busy}
               label="Add more images"
               hint="New images are added after the current selection."
               onFiles={addImages}
@@ -223,16 +276,27 @@ function Page() {
               </div>
               <ol className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {images.map((item, index) => (
-                  <li key={item.id} className="overflow-hidden rounded-xl border border-border bg-surface">
+                  <li
+                    key={item.id}
+                    className="overflow-hidden rounded-xl border border-border bg-surface"
+                  >
                     <div className="relative aspect-[4/3] bg-surface-muted">
-                      <img src={item.url} alt={`Preview of ${item.file.name}`} className="size-full object-contain" />
+                      <img
+                        src={item.url}
+                        alt={`Preview of ${item.file.name}`}
+                        className="size-full object-contain"
+                      />
                       <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2 py-1 text-xs font-bold shadow-sm">
                         {index + 1}
                       </span>
                     </div>
                     <div className="space-y-2 p-3">
-                      <p className="truncate text-sm font-medium" title={item.file.name}>{item.file.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.width} × {item.height}px</p>
+                      <p className="truncate text-sm font-medium" title={item.file.name}>
+                        {item.file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.width} × {item.height}px
+                      </p>
                       <div className="flex items-center gap-2">
                         <Button
                           type="button"
@@ -320,10 +384,16 @@ function Page() {
           </>
         )}
 
-        <ToolError message={error} />
+        <ToolFeedback
+          loading={loading || busy}
+          progress={progress}
+          message={status}
+          success={success}
+          error={error}
+        />
 
         {images.length > 0 && (
-          <Button onClick={generatePdf} disabled={busy}>
+          <Button onClick={generatePdf} disabled={busy || loading}>
             {busy ? "Creating PDF…" : "Create and download PDF"}
           </Button>
         )}

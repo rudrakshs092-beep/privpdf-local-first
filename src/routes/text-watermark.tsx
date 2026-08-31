@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, FileText, Loader2, RefreshCcw } from "lucide-react";
+import { Check, FileText, RefreshCcw } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -99,12 +100,18 @@ function Page() {
   const [fontSize, setFontSize] = useState("36");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const pick = async (files: File[]) => {
     const next = files[0];
     if (!next) return;
     setError(null);
+    setSuccess(null);
+    setProgress(0);
+    setStatus(null);
     setFile(null);
     setBytes(null);
     setThumbnails([]);
@@ -120,16 +127,27 @@ function Page() {
     }
 
     setLoading(true);
+    setProgress(15);
+    setStatus("Reading your PDF…");
     try {
       const nextBytes = await next.arrayBuffer();
+      setProgress(40);
       const urls = await renderThumbnails(nextBytes, 240);
+      setProgress(80);
       if (urls.length === 0) throw new Error("This PDF has no pages.");
       setFile(next);
       setBytes(nextBytes);
       setThumbnails(urls);
       setSelectedPages(urls.map((_, index) => index + 1));
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `PDF loaded successfully — ${urls.length} page${urls.length === 1 ? "" : "s"} ready for watermarking.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, next.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setLoading(false);
     }
@@ -140,6 +158,9 @@ function Page() {
     setBytes(null);
     setThumbnails([]);
     setSelectedPages([]);
+    setProgress(0);
+    setStatus(null);
+    setSuccess(null);
     setError(null);
   };
 
@@ -184,9 +205,13 @@ function Page() {
     }
 
     setError(null);
+    setSuccess(null);
     setBusy(true);
+    setProgress(10);
+    setStatus("Preparing the watermark…");
     try {
       const { StandardFonts, degrees, rgb } = await loadPdfLib();
+      setProgress(35);
       const pdf = await loadPdfDocument(bytes, file.name);
       const font = await pdf.embedFont(StandardFonts.HelveticaBold);
       pdf.getPages().forEach((page, index) => {
@@ -205,10 +230,19 @@ function Page() {
           opacity: opacityValue,
           rotate: degrees(rotationValue),
         });
+        setProgress(35 + ((index + 1) / pdf.getPageCount()) * 50);
+        setStatus(`Adding watermark to page ${index + 1} of ${pdf.getPageCount()}…`);
       });
       downloadBytes(await pdf.save(), `${baseName(file.name)}-watermarked.pdf`);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `Added the watermark to ${selectedPages.length} page${selectedPages.length === 1 ? "" : "s"} and downloaded the result.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, file.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setBusy(false);
     }
@@ -230,17 +264,10 @@ function Page() {
             accept="application/pdf"
             label="Drop your PDF here"
             hint="One PDF file to watermark locally."
+            disabled={loading || busy}
             onFiles={pick}
           />
-        ) : loading ? (
-          <div className="flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-5 py-10 text-center">
-            <Loader2 className="size-6 animate-spin text-primary-strong" aria-hidden="true" />
-            <p className="mt-3 text-sm font-semibold">Reading your PDF…</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Pages are processed locally in your browser.
-            </p>
-          </div>
-        ) : (
+        ) : loading ? null : (
           <>
             <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface-muted px-3 py-2.5">
               <FileText className="size-4 shrink-0 text-accent-foreground" aria-hidden="true" />
@@ -248,7 +275,7 @@ function Page() {
               <span className="text-xs text-muted-foreground">
                 {thumbnails.length} pages · {file ? formatBytes(file.size) : ""}
               </span>
-              <Button variant="secondary" size="sm" onClick={reset} disabled={busy}>
+              <Button variant="secondary" size="sm" onClick={reset} disabled={busy || loading}>
                 <RefreshCcw className="mr-2 size-4" aria-hidden="true" />
                 Change PDF
               </Button>
@@ -376,10 +403,16 @@ function Page() {
           </>
         )}
 
-        <ToolError message={error} />
+        <ToolFeedback
+          loading={loading || busy}
+          progress={progress}
+          message={status}
+          success={success}
+          error={error}
+        />
 
         {file && !loading && (
-          <Button onClick={generate} disabled={busy || selectedPages.length === 0}>
+          <Button onClick={generate} disabled={busy || loading || selectedPages.length === 0}>
             {busy ? "Adding watermark…" : "Add watermark and download"}
           </Button>
         )}

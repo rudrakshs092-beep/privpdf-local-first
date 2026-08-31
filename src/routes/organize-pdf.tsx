@@ -3,7 +3,8 @@ import { ArrowLeft, ArrowRight, RotateCw, Trash2, Undo2 } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
@@ -43,12 +44,18 @@ function Page() {
   const [removed, setRemoved] = useState<PageItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const reset = () => {
     setFile(null);
     setPages([]);
     setRemoved([]);
+    setProgress(0);
+    setStatus(null);
+    setSuccess(null);
     setError(null);
   };
 
@@ -56,6 +63,7 @@ function Page() {
     const next = files[0];
     if (!next) return;
     setError(null);
+    setSuccess(null);
     setPages([]);
     setRemoved([]);
     if (next.size === 0) {
@@ -63,9 +71,13 @@ function Page() {
       return;
     }
     setLoading(true);
+    setProgress(15);
+    setStatus("Reading your PDF…");
     try {
       const bytes = await next.arrayBuffer();
+      setProgress(35);
       const thumbs = await renderThumbnails(bytes, 220);
+      setProgress(80);
       if (thumbs.length === 0) throw new Error("This PDF has no pages");
       setPages(
         thumbs.map((thumb, index) => ({
@@ -77,6 +89,11 @@ function Page() {
         })),
       );
       setFile(next);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `PDF loaded successfully — ${thumbs.length} page${thumbs.length === 1 ? "" : "s"} ready to organize.`,
+      );
     } catch (cause) {
       const message = cause instanceof Error ? cause.message : "";
       setError(
@@ -85,6 +102,8 @@ function Page() {
           : "Could not read this PDF. It may be corrupted or not a PDF file.",
       );
       setFile(null);
+      setProgress(0);
+      setStatus(null);
     } finally {
       setLoading(false);
     }
@@ -130,10 +149,14 @@ function Page() {
   const generate = async () => {
     if (!file || pages.length === 0) return;
     setError(null);
+    setSuccess(null);
     setBusy(true);
+    setProgress(10);
+    setStatus("Preparing the new page order…");
     try {
       const { PDFDocument, degrees } = await loadPdfLib();
       const source = await loadPdfDocument(await file.arrayBuffer(), file.name);
+      setProgress(45);
       const output = await PDFDocument.create();
       const copied = await output.copyPages(
         source,
@@ -143,10 +166,19 @@ function Page() {
         const rotation = pages[index]!.rotation;
         if (rotation) page.setRotation(degrees((page.getRotation().angle + rotation) % 360));
         output.addPage(page);
+        setProgress(45 + ((index + 1) / copied.length) * 40);
+        setStatus(`Arranging page ${index + 1} of ${copied.length}…`);
       });
       downloadBytes(await output.save(), `${baseName(file.name)}-organized.pdf`);
+      setProgress(100);
+      setStatus(null);
+      setSuccess(
+        `Organized ${pages.length} page${pages.length === 1 ? "" : "s"} and downloaded the result.`,
+      );
     } catch (cause) {
       setError(friendlyPdfError(cause, file.name));
+      setProgress(0);
+      setStatus(null);
     } finally {
       setBusy(false);
     }
@@ -163,12 +195,16 @@ function Page() {
             accept="application/pdf"
             label="Drop your PDF here"
             hint="One PDF file to organize."
+            disabled={loading || busy}
             onFiles={pick}
           />
-          {loading && (
-            <p className="mt-4 text-sm text-muted-foreground">Rendering page previews…</p>
-          )}
-          <ToolError message={error} />
+          <ToolFeedback
+            loading={loading}
+            progress={progress}
+            message={status}
+            success={success}
+            error={error}
+          />
         </>
       ) : (
         <div className="space-y-6">
@@ -177,7 +213,7 @@ function Page() {
             <span className="text-xs text-muted-foreground">
               {pages.length} of {pages.length + removed.length} pages · {formatBytes(file.size)}
             </span>
-            <Button variant="secondary" size="sm" onClick={reset}>
+            <Button variant="secondary" size="sm" onClick={reset} disabled={busy || loading}>
               Change
             </Button>
           </div>
@@ -247,10 +283,16 @@ function Page() {
             </ul>
           )}
 
-          <ToolError message={error} />
+          <ToolFeedback
+            loading={busy}
+            progress={progress}
+            message={status}
+            success={success}
+            error={error}
+          />
 
           <div className="flex flex-wrap gap-3">
-            <Button onClick={generate} disabled={busy || pages.length === 0}>
+            <Button onClick={generate} disabled={busy || loading || pages.length === 0}>
               {busy ? "Building…" : "Generate and download"}
             </Button>
             {removed.length > 0 && (

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
-import { ToolError, ToolShell } from "@/components/tools/ToolShell";
+import { ToolFeedback } from "@/components/tools/ToolFeedback";
+import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
@@ -45,12 +46,16 @@ function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [level, setLevel] = useState<(typeof levels)[number]["id"]>("balanced");
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const compress = async () => {
     if (!file) return;
     setError(null);
+    setSuccess(null);
+    setProgress(5);
     setBusy(true);
     setStatus("Reading document…");
     try {
@@ -61,6 +66,7 @@ function Page() {
       const output = await PDFDocument.create();
       const pageCount = source.getPageCount();
       if (pageCount === 0) throw new Error("This PDF has no pages.");
+      setProgress(15);
 
       for (let index = 0; index < pageCount; index++) {
         setStatus(`Compressing page ${index + 1} of ${pageCount}…`);
@@ -70,20 +76,26 @@ function Page() {
         const original = source.getPage(index).getSize();
         const page = output.addPage([original.width, original.height]);
         page.drawImage(image, { x: 0, y: 0, width: original.width, height: original.height });
+        setProgress(15 + ((index + 1) / pageCount) * 70);
       }
 
       const saved = await output.save();
       if (saved.byteLength >= file.size) {
-        setStatus(
-          `This PDF is already well optimised (${formatBytes(file.size)}). The compressed copy was not smaller, so the original was kept.`,
-        );
         downloadBytes(new Uint8Array(bytes), `${baseName(file.name)}-optimised.pdf`);
+        setSuccess(
+          `Your PDF was already well optimised (${formatBytes(file.size)}), so the original was kept and downloaded.`,
+        );
       } else {
-        setStatus(`Done — ${formatBytes(file.size)} → ${formatBytes(saved.byteLength)}`);
         downloadBytes(saved, `${baseName(file.name)}-compressed.pdf`);
+        setSuccess(
+          `Compressed the PDF from ${formatBytes(file.size)} to ${formatBytes(saved.byteLength)} and downloaded it.`,
+        );
       }
+      setProgress(100);
+      setStatus(null);
     } catch (cause) {
       setError(friendlyPdfError(cause, file.name));
+      setProgress(0);
       setStatus(null);
     } finally {
       setBusy(false);
@@ -102,6 +114,8 @@ function Page() {
           hint="One PDF file to compress."
           onFiles={(files) => {
             setStatus(null);
+            setSuccess(null);
+            setProgress(0);
             setFile(files[0] ?? null);
           }}
         />
@@ -116,6 +130,8 @@ function Page() {
               onClick={() => {
                 setFile(null);
                 setStatus(null);
+                setSuccess(null);
+                setProgress(0);
                 setError(null);
               }}
               disabled={busy}
@@ -145,8 +161,13 @@ function Page() {
             </p>
           </div>
 
-          <ToolError message={error} />
-          {status && <p className="text-sm text-muted-foreground">{status}</p>}
+          <ToolFeedback
+            loading={busy}
+            progress={progress}
+            message={status}
+            success={success}
+            error={error}
+          />
 
           <Button onClick={compress} disabled={busy}>
             {busy ? "Compressing…" : "Compress PDF"}
