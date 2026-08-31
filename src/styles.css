@@ -220,6 +220,14 @@ html[data-landing-theme="dark"] .landing-header {
   border-color: color-mix(in srgb, var(--landing-blue) 28%, var(--landing-border));
   color: var(--landing-blue);
 }
+.landing-shell .landing-privacy-banner {
+  background: color-mix(in srgb, var(--landing-blue) 12%, var(--landing-surface));
+  border-color: color-mix(in srgb, var(--landing-blue) 38%, var(--landing-border));
+  color: var(--landing-text);
+}
+.landing-shell .landing-privacy-banner svg {
+  color: var(--landing-blue);
+}
 .landing-shell .landing-eyebrow {
   color: var(--landing-blue);
   font-size: 0.7rem;

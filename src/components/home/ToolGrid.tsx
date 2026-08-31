@@ -43,8 +43,8 @@ export function ToolGrid() {
 
   return (
     <section id="tools" className="landing-tools-section border-b border-border">
-      <div className="section-x py-12 sm:py-16">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="section-x py-10 sm:py-12">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <header className="max-w-xl">
             <h2 className="text-2xl font-extrabold sm:text-3xl">What do you need to do?</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -72,23 +72,23 @@ export function ToolGrid() {
         </div>
 
         {filteredTools.length ? (
-          <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTools.map((tool) => {
               const Icon = icons[tool.icon] ?? Combine;
               return (
                 <li key={tool.to}>
                   <Link
                     to={tool.to}
-                    className="landing-tool-card group flex h-full min-w-0 flex-col rounded-xl border border-border p-4 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lift"
+                    className="landing-tool-card group flex h-full min-w-0 flex-col rounded-xl border border-border p-3.5 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lift"
                   >
                     <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-accent-foreground">
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
-                    <h3 className="mt-4 text-base font-bold">{tool.name}</h3>
+                    <h3 className="mt-3 text-base font-bold">{tool.name}</h3>
                     <p className="mt-1 min-h-10 text-sm leading-relaxed text-muted-foreground">
                       {tool.description}
                     </p>
-                    <span className="mt-4 inline-flex min-h-10 w-fit items-center rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors group-hover:bg-primary-strong">
+                    <span className="mt-3 inline-flex w-fit items-center rounded-md bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground transition-colors group-hover:bg-primary-strong">
                       Open Tool
                     </span>
                   </Link>
@@ -97,7 +97,7 @@ export function ToolGrid() {
             })}
           </ul>
         ) : (
-          <p className="mt-8 rounded-xl border border-dashed border-border-strong px-4 py-8 text-center text-sm text-muted-foreground">
+          <p className="mt-6 rounded-xl border border-dashed border-border-strong px-4 py-6 text-center text-sm text-muted-foreground">
             No matching tools. Try a different search.
           </p>
         )}
