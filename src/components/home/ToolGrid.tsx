@@ -79,7 +79,7 @@ export function ToolGrid() {
                 <li key={tool.to}>
                   <Link
                     to={tool.to}
-                    className="landing-tool-card group flex h-full min-w-0 flex-col rounded-xl border border-border p-3.5 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lift"
+                    className="landing-tool-card group flex h-full min-w-0 flex-col items-start rounded-xl border border-border p-4 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lift"
                   >
                     <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-accent-foreground">
                       <Icon className="size-5" aria-hidden="true" />
@@ -88,10 +88,11 @@ export function ToolGrid() {
                     <p className="mt-1 min-h-10 text-sm leading-relaxed text-muted-foreground">
                       {tool.description}
                     </p>
-                    <span className="mt-3 inline-flex w-fit items-center rounded-md bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground transition-colors group-hover:bg-primary-strong">
+                    <span className="mt-3 inline-flex w-fit shrink-0 items-center whitespace-nowrap rounded-full bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground transition-opacity group-hover:opacity-90">
                       Open Tool
                     </span>
                   </Link>
+
                 </li>
               );
             })}

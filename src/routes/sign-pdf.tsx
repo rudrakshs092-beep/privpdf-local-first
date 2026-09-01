@@ -3,13 +3,15 @@ import { Check, Eraser, FileSignature, Grip } from "lucide-react";
 import { useRef, useState, type KeyboardEvent } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
   canvasToBlob,
-  downloadBlob,
   friendlyPdfError,
   loadPdfDocument,
   loadPdfLib,
@@ -64,6 +66,7 @@ function Page() {
   const [position, setPosition] = useState<SignaturePosition>(INITIAL_POSITION);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { results, clearResults, deliverBlob } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -243,6 +246,7 @@ function Page() {
     if (!file || !bytes || !signature) return;
     setError(null);
     setSuccess(null);
+    clearResults();
     setBusy(true);
     setProgress(10);
     setStatus("Preparing the signed PDF…");
@@ -267,7 +271,7 @@ function Page() {
       const outputCopy = new Uint8Array(output.byteLength);
       outputCopy.set(output);
       const blob = new Blob([outputCopy.buffer], { type: "application/pdf" });
-      downloadBlob(blob, `${baseName(file.name)}-signed.pdf`);
+      deliverBlob(blob, `${baseName(file.name)}-signed.pdf`);
       setProgress(100);
       setStatus(null);
       setSuccess(`Signed page ${selectedPage} and downloaded the finished PDF.`);
@@ -467,6 +471,8 @@ function Page() {
           </Button>
         )}
       </div>
+    <ToolResult files={results} />
+      <ProcessingOverlay open={busy} message={status} />
     </ToolShell>
   );
 }

@@ -3,13 +3,15 @@ import { Check, Download, FileText, ImageDown } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
   canvasToBlob,
-  downloadBlob,
   formatBytes,
   friendlyPdfError,
   renderPageToCanvas,
@@ -66,6 +68,7 @@ function Page() {
   const [quality, setQuality] = useState("0.8");
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const { results, clearResults, deliverBlob } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -147,6 +150,7 @@ function Page() {
     if (!file || !bytes || selectedPages.size === 0) return;
     setError(null);
     setSuccess(null);
+    clearResults();
     setExporting(true);
     setProgress(10);
     setStatus("Preparing selected pages…");
@@ -162,7 +166,7 @@ function Page() {
           mime,
           format === "jpg" ? Number(quality) : undefined,
         );
-        downloadBlob(blob, `${baseName(file.name)}-page-${page.pageNumber}.${extension}`);
+        deliverBlob(blob, `${baseName(file.name)}-page-${page.pageNumber}.${extension}`);
         canvas.width = 0;
         canvas.height = 0;
         setProgress(10 + ((index + 1) / orderedPages.length) * 85);
@@ -345,6 +349,8 @@ function Page() {
           </Button>
         )}
       </div>
+    <ToolResult files={results} />
+      <ProcessingOverlay open={exporting || loading} message={status} />
     </ToolShell>
   );
 }

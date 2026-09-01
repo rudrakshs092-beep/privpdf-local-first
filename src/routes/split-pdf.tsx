@@ -2,13 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   baseName,
-  downloadBytes,
   formatBytes,
   friendlyPdfError,
   getPageCount,
@@ -43,6 +45,7 @@ function Page() {
   const [ranges, setRanges] = useState("1-1");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { results, clearResults, deliverPdf } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -90,6 +93,7 @@ function Page() {
     if (!file) return;
     setError(null);
     setSuccess(null);
+    clearResults();
     setBusy(true);
     setProgress(10);
     setStatus("Preparing selected pages…");
@@ -101,7 +105,7 @@ function Page() {
       const output = await PDFDocument.create();
       const pages = await output.copyPages(source, indices);
       pages.forEach((page) => output.addPage(page));
-      downloadBytes(await output.save(), `${baseName(file.name)}-extract.pdf`);
+      deliverPdf(await output.save(), `${baseName(file.name)}-extract.pdf`);
       setProgress(100);
       setStatus(null);
       setSuccess(
@@ -120,6 +124,7 @@ function Page() {
     if (!file) return;
     setError(null);
     setSuccess(null);
+    clearResults();
     setBusy(true);
     setProgress(10);
     setStatus("Preparing individual pages…");
@@ -133,7 +138,7 @@ function Page() {
         const output = await PDFDocument.create();
         const [page] = await output.copyPages(source, [index]);
         output.addPage(page);
-        downloadBytes(await output.save(), `${baseName(file.name)}-page-${index + 1}.pdf`);
+        deliverPdf(await output.save(), `${baseName(file.name)}-page-${index + 1}.pdf`);
         setProgress(10 + ((index + 1) / totalPages) * 85);
         await new Promise((resolve) => setTimeout(resolve, 150));
       }
@@ -217,6 +222,8 @@ function Page() {
           error={error}
         />
       )}
+    <ToolResult files={results} />
+      <ProcessingOverlay open={busy} message={status} />
     </ToolShell>
   );
 }
