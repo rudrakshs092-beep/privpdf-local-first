@@ -3,11 +3,13 @@ import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
-  downloadBytes,
   formatBytes,
   friendlyPdfError,
   loadPdfDocument,
@@ -38,6 +40,7 @@ export const Route = createFileRoute("/merge-pdf")({
 function Page() {
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
+  const { results, clearResults, deliverPdf } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -61,6 +64,7 @@ function Page() {
     setSuccess(null);
     setProgress(5);
     setStatus("Preparing your PDFs…");
+    clearResults();
     setBusy(true);
     try {
       const { PDFDocument } = await loadPdfLib();
@@ -73,7 +77,7 @@ function Page() {
         setProgress(10 + ((index + 1) / files.length) * 75);
       }
       if (output.getPageCount() === 0) throw new Error("These PDFs contain no pages.");
-      downloadBytes(await output.save(), "privpdf-merged.pdf");
+      deliverPdf(await output.save(), "privpdf-merged.pdf");
       setProgress(100);
       setStatus(null);
       setSuccess(`Merged ${files.length} PDFs and downloaded the result.`);
@@ -177,6 +181,8 @@ function Page() {
           </Button>
         )}
       </div>
+    <ToolResult files={results} />
+      <ProcessingOverlay open={busy} message={status} />
     </ToolShell>
   );
 }

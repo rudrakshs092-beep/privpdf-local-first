@@ -3,12 +3,14 @@ import { ArrowLeft, ArrowRight, RotateCw, Trash2, Undo2 } from "lucide-react";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
-  downloadBytes,
   formatBytes,
   friendlyPdfError,
   loadPdfDocument,
@@ -44,6 +46,7 @@ function Page() {
   const [removed, setRemoved] = useState<PageItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { results, clearResults, deliverPdf } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -150,6 +153,7 @@ function Page() {
     if (!file || pages.length === 0) return;
     setError(null);
     setSuccess(null);
+    clearResults();
     setBusy(true);
     setProgress(10);
     setStatus("Preparing the new page order…");
@@ -169,7 +173,7 @@ function Page() {
         setProgress(45 + ((index + 1) / copied.length) * 40);
         setStatus(`Arranging page ${index + 1} of ${copied.length}…`);
       });
-      downloadBytes(await output.save(), `${baseName(file.name)}-organized.pdf`);
+      deliverPdf(await output.save(), `${baseName(file.name)}-organized.pdf`);
       setProgress(100);
       setStatus(null);
       setSuccess(
@@ -304,6 +308,8 @@ function Page() {
           </div>
         </div>
       )}
+    <ToolResult files={results} />
+      <ProcessingOverlay open={busy} message={status} />
     </ToolShell>
   );
 }

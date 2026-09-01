@@ -2,13 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   baseName,
-  downloadBytes,
   formatBytes,
   friendlyPdfError,
   getPageCount,
@@ -46,6 +48,7 @@ function Page() {
   const [scope, setScope] = useState("all");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { results, clearResults, deliverPdf } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -94,6 +97,7 @@ function Page() {
     if (!file) return;
     setError(null);
     setSuccess(null);
+    clearResults();
     setBusy(true);
     setProgress(10);
     setStatus("Preparing pages…");
@@ -110,7 +114,7 @@ function Page() {
         setProgress(10 + ((position + 1) / targets.length) * 75);
         setStatus(`Rotating page ${position + 1} of ${targets.length}…`);
       }
-      downloadBytes(await doc.save(), `${baseName(file.name)}-rotated.pdf`);
+      deliverPdf(await doc.save(), `${baseName(file.name)}-rotated.pdf`);
       setProgress(100);
       setStatus(null);
       setSuccess(
@@ -204,6 +208,8 @@ function Page() {
           error={error}
         />
       )}
+    <ToolResult files={results} />
+      <ProcessingOverlay open={busy} message={status} />
     </ToolShell>
   );
 }

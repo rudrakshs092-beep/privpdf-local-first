@@ -2,13 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { FileDrop } from "@/components/tools/FileDrop";
+import { ProcessingOverlay } from "@/components/tools/ProcessingOverlay";
+import { ToolResult } from "@/components/tools/ToolResult";
+import { useToolResults } from "@/components/tools/useToolResults";
 import { ToolFeedback } from "@/components/tools/ToolFeedback";
 import { ToolShell } from "@/components/tools/ToolShell";
 import { Button } from "@/components/ui/button";
 import {
   baseName,
   canvasToBlob,
-  downloadBytes,
   formatBytes,
   friendlyPdfError,
   loadPdfDocument,
@@ -46,6 +48,7 @@ function Page() {
   const [file, setFile] = useState<File | null>(null);
   const [level, setLevel] = useState<(typeof levels)[number]["id"]>("balanced");
   const [busy, setBusy] = useState(false);
+  const { results, clearResults, deliverPdf } = useToolResults();
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -56,6 +59,7 @@ function Page() {
     setError(null);
     setSuccess(null);
     setProgress(5);
+    clearResults();
     setBusy(true);
     setStatus("Reading document…");
     try {
@@ -81,12 +85,12 @@ function Page() {
 
       const saved = await output.save();
       if (saved.byteLength >= file.size) {
-        downloadBytes(new Uint8Array(bytes), `${baseName(file.name)}-optimised.pdf`);
+        deliverPdf(new Uint8Array(bytes), `${baseName(file.name)}-optimised.pdf`);
         setSuccess(
           `Your PDF was already well optimised (${formatBytes(file.size)}), so the original was kept and downloaded.`,
         );
       } else {
-        downloadBytes(saved, `${baseName(file.name)}-compressed.pdf`);
+        deliverPdf(saved, `${baseName(file.name)}-compressed.pdf`);
         setSuccess(
           `Compressed the PDF from ${formatBytes(file.size)} to ${formatBytes(saved.byteLength)} and downloaded it.`,
         );
@@ -174,6 +178,8 @@ function Page() {
           </Button>
         </div>
       )}
+    <ToolResult files={results} />
+      <ProcessingOverlay open={busy} message={status} />
     </ToolShell>
   );
 }

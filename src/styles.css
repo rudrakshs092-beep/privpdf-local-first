@@ -50,33 +50,34 @@
   --radius: 0.75rem;
 
   /* Brand */
-  --primary: #16a085;
-  --primary-strong: #0f766e;
-  --primary-foreground: #ffffff;
-  --primary-soft: #e8f6f3;
+  --primary: #10b981;
+  --primary-strong: #34d399;
+  --primary-foreground: #0f172a;
+  --primary-soft: #10281f;
 
   /* Neutrals */
-  --background: #f8fafc;
-  --foreground: #1e293b;
-  --surface: #ffffff;
-  --surface-muted: #f1f5f9;
-  --card: #ffffff;
-  --card-foreground: #1e293b;
-  --popover: #ffffff;
-  --popover-foreground: #1e293b;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #334155;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #e8f6f3;
-  --accent-foreground: #0f766e;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #dbe4f0;
-  --border-strong: #bfd0e6;
-  --input: #dbe4f0;
-  --ring: #16a085;
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --surface: #1e293b;
+  --surface-muted: #17233a;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --secondary: #1e293b;
+  --secondary-foreground: #e2e8f0;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #10281f;
+  --accent-foreground: #34d399;
+  --destructive: #f87171;
+  --destructive-foreground: #0f172a;
+  --border: #334155;
+  --border-strong: #475569;
+  --input: #334155;
+  --ring: #10b981;
 }
+
 
 .dark {
   --background: #0f172a;
@@ -162,11 +163,12 @@
   backdrop-filter: blur(12px);
 }
 .landing-header {
-  --landing-bg: #f8fafc;
-  --landing-text: #0f172a;
-  --landing-muted: #475569;
-  --landing-border: #dbe3ee;
-  --landing-blue: #16a085;
+  --landing-bg: #0f172a;
+  --landing-surface: #1e293b;
+  --landing-text: #f8fafc;
+  --landing-muted: #94a3b8;
+  --landing-border: #334155;
+  --landing-blue: #10b981;
   background: color-mix(in srgb, var(--landing-bg) 92%, transparent);
   color: var(--landing-text);
   border-color: var(--landing-border);
@@ -174,11 +176,11 @@
 html[data-landing-theme="dark"] .landing-shell,
 html[data-landing-theme="dark"] .landing-header {
   --landing-bg: #0f172a;
-  --landing-surface: #111c30;
-  --landing-text: #e5edf9;
-  --landing-muted: #9aabc2;
-  --landing-border: #263650;
-  --landing-blue: #2dd4bf;
+  --landing-surface: #1e293b;
+  --landing-text: #f8fafc;
+  --landing-muted: #94a3b8;
+  --landing-border: #334155;
+  --landing-blue: #10b981;
   background: var(--landing-bg);
   color: var(--landing-text);
 }
@@ -187,12 +189,12 @@ html[data-landing-theme="dark"] .landing-header {
   border-color: var(--landing-border);
 }
 .landing-shell {
-  --landing-bg: #f8fafc;
-  --landing-surface: #ffffff;
-  --landing-text: #0f172a;
-  --landing-muted: #475569;
-  --landing-border: #dbe3ee;
-  --landing-blue: #16a085;
+  --landing-bg: #0f172a;
+  --landing-surface: #1e293b;
+  --landing-text: #f8fafc;
+  --landing-muted: #94a3b8;
+  --landing-border: #334155;
+  --landing-blue: #10b981;
   background: var(--landing-bg);
   color: var(--landing-text);
 }
@@ -344,7 +346,7 @@ html[data-landing-theme="dark"] .landing-header {
   background: var(--landing-blue);
 }
 .landing-shell .text-primary-foreground {
-  color: #fff;
+  color: #0f172a;
 }
 .landing-shell .hover\:bg-primary\/90:hover {
   background: color-mix(in srgb, var(--landing-blue) 90%, #000);

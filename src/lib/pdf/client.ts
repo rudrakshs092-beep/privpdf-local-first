@@ -29,10 +29,14 @@ export function downloadBlob(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
-export function downloadBytes(bytes: Uint8Array, filename: string) {
+export function toPdfBlob(bytes: Uint8Array): Blob {
   const copy = new Uint8Array(bytes.byteLength);
   copy.set(bytes);
-  downloadBlob(new Blob([copy.buffer], { type: "application/pdf" }), filename);
+  return new Blob([copy.buffer], { type: "application/pdf" });
+}
+
+export function downloadBytes(bytes: Uint8Array, filename: string) {
+  downloadBlob(toPdfBlob(bytes), filename);
 }
 
 export function baseName(name: string) {
