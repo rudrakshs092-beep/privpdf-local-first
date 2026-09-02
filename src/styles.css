@@ -181,6 +181,9 @@ html[data-landing-theme="dark"] .landing-header {
   --landing-muted: #94a3b8;
   --landing-border: #334155;
   --landing-blue: #10b981;
+  --landing-open-bg: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
+  --landing-open-hover: #0f766e;
+  --landing-open-text: #99f6e4;
   background: var(--landing-bg);
   color: var(--landing-text);
 }
@@ -195,6 +198,9 @@ html[data-landing-theme="dark"] .landing-header {
   --landing-muted: #64748b;
   --landing-border: #e2e8f0;
   --landing-blue: #10b981;
+  --landing-open-bg: #ecfdf5;
+  --landing-open-hover: #a7f3d0;
+  --landing-open-text: #065f46;
   background: var(--landing-bg);
   color: var(--landing-text);
 }
@@ -236,6 +242,25 @@ html[data-landing-theme="dark"] .landing-header {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+.landing-open-tool-btn {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  border-radius: 9999px;
+  border: 0;
+  background: var(--landing-open-bg);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  color: var(--landing-open-text);
+  transition: background 0.15s ease;
+}
+.landing-open-tool-btn:hover {
+  background: var(--landing-open-hover);
 }
 .landing-search {
   min-height: 2.75rem;

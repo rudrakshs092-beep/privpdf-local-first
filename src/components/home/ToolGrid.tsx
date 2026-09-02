@@ -88,9 +88,7 @@ export function ToolGrid() {
                     <p className="mt-1 min-h-10 text-sm leading-relaxed text-muted-foreground">
                       {tool.description}
                     </p>
-                    <span className="mt-3 inline-flex w-fit shrink-0 items-center whitespace-nowrap rounded-full bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground transition-opacity group-hover:opacity-90">
-                      Open Tool
-                    </span>
+                    <span className="landing-open-tool-btn mt-3">Open Tool</span>
                   </Link>
 
                 </li>
