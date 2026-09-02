@@ -42,8 +42,8 @@
   --color-ring: var(--ring);
   --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 8px 24px -16px rgb(22 160 133 / 0.16);
-  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.06), 0 18px 36px -20px rgb(22 160 133 / 0.2);
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -16px rgb(15 23 42 / 0.1);
+  --shadow-lift: 0 2px 6px rgb(15 23 42 / 0.05), 0 18px 36px -20px rgb(15 23 42 / 0.18);
 }
 
 :root {
@@ -51,30 +51,30 @@
 
   /* Brand */
   --primary: #10b981;
-  --primary-strong: #34d399;
-  --primary-foreground: #0f172a;
-  --primary-soft: #10281f;
+  --primary-strong: #059669;
+  --primary-foreground: #ffffff;
+  --primary-soft: #ecfdf5;
 
   /* Neutrals */
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --surface: #1e293b;
-  --surface-muted: #17233a;
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --popover: #1e293b;
-  --popover-foreground: #f8fafc;
-  --secondary: #1e293b;
-  --secondary-foreground: #e2e8f0;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #10281f;
-  --accent-foreground: #34d399;
-  --destructive: #f87171;
-  --destructive-foreground: #0f172a;
-  --border: #334155;
-  --border-strong: #475569;
-  --input: #334155;
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f9;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --popover: #ffffff;
+  --popover-foreground: #1e293b;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #1e293b;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #ecfdf5;
+  --accent-foreground: #059669;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --input: #e2e8f0;
   --ring: #10b981;
 }
 
@@ -163,11 +163,11 @@
   backdrop-filter: blur(12px);
 }
 .landing-header {
-  --landing-bg: #0f172a;
-  --landing-surface: #1e293b;
-  --landing-text: #f8fafc;
-  --landing-muted: #94a3b8;
-  --landing-border: #334155;
+  --landing-bg: #f8fafc;
+  --landing-surface: #ffffff;
+  --landing-text: #1e293b;
+  --landing-muted: #64748b;
+  --landing-border: #e2e8f0;
   --landing-blue: #10b981;
   background: color-mix(in srgb, var(--landing-bg) 92%, transparent);
   color: var(--landing-text);
@@ -189,11 +189,11 @@ html[data-landing-theme="dark"] .landing-header {
   border-color: var(--landing-border);
 }
 .landing-shell {
-  --landing-bg: #0f172a;
-  --landing-surface: #1e293b;
-  --landing-text: #f8fafc;
-  --landing-muted: #94a3b8;
-  --landing-border: #334155;
+  --landing-bg: #f8fafc;
+  --landing-surface: #ffffff;
+  --landing-text: #1e293b;
+  --landing-muted: #64748b;
+  --landing-border: #e2e8f0;
   --landing-blue: #10b981;
   background: var(--landing-bg);
   color: var(--landing-text);
@@ -336,20 +336,53 @@ html[data-landing-theme="dark"] .landing-header {
 .landing-mobile-menu button:hover {
   background: color-mix(in srgb, var(--landing-blue) 10%, transparent);
 }
-.landing-shell .bg-primary-soft {
-  background: color-mix(in srgb, var(--landing-blue) 12%, var(--landing-surface));
-}
-.landing-shell .text-accent-foreground {
-  color: var(--landing-blue);
-}
 .landing-shell .bg-primary {
   background: var(--landing-blue);
 }
 .landing-shell .text-primary-foreground {
-  color: #0f172a;
+  color: #ffffff;
 }
 .landing-shell .hover\:bg-primary\/90:hover {
-  background: color-mix(in srgb, var(--landing-blue) 90%, #000);
+  background: #059669;
+}
+.landing-shell .landing-tool-card {
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+.landing-shell .landing-tool-card:hover {
+  box-shadow: var(--shadow-lift);
+}
+.landing-shell .landing-privacy-banner {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+.landing-shell .landing-privacy-banner svg {
+  color: #059669;
+}
+.landing-shell .bg-primary-soft {
+  background: #ecfdf5;
+}
+.landing-shell .text-accent-foreground {
+  color: #059669;
+}
+.landing-shell .text-primary-strong {
+  color: #059669;
+}
+.landing-shell .bg-surface,
+.landing-shell .bg-surface-muted {
+  background: #ffffff;
+}
+.landing-shell .bg-background {
+  background: #f8fafc;
+}
+.landing-header .bg-primary {
+  background: var(--landing-blue);
+}
+.landing-header .text-primary-strong {
+  color: #059669;
 }
 .landing-shell + * {
   background: var(--landing-bg);
@@ -363,19 +396,40 @@ html[data-landing-theme="dark"] .landing-header {
   }
 }
 
-.landing-shell .bg-surface,
-.landing-shell .bg-surface-muted {
-  background: var(--landing-surface);
-}
-.landing-shell .bg-background {
-  background: var(--landing-bg);
-}
-.landing-header .bg-primary {
-  background: var(--landing-blue);
-}
-.landing-header .text-primary-strong {
-  color: var(--landing-blue);
-}
 html[data-landing-theme="dark"] .landing-shell .text-foreground {
   color: var(--landing-text);
+}
+html[data-landing-theme="dark"] .landing-shell .landing-tool-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+html[data-landing-theme="dark"] .landing-shell .text-primary-strong {
+  color: var(--landing-blue);
+}
+html[data-landing-theme="dark"] .landing-shell .bg-surface,
+html[data-landing-theme="dark"] .landing-shell .bg-surface-muted {
+  background: #1e293b;
+}
+html[data-landing-theme="dark"] .landing-shell .bg-background {
+  background: #0f172a;
+}
+html[data-landing-theme="dark"] .landing-shell .text-primary-foreground {
+  color: #0f172a;
+}
+html[data-landing-theme="dark"] .landing-shell .landing-privacy-banner {
+  background: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
+  border-color: color-mix(in srgb, var(--landing-blue) 38%, #334155);
+  color: #f8fafc;
+}
+html[data-landing-theme="dark"] .landing-shell .landing-privacy-banner svg {
+  color: var(--landing-blue);
+}
+html[data-landing-theme="dark"] .landing-shell .bg-primary-soft {
+  background: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
+}
+html[data-landing-theme="dark"] .landing-shell .text-accent-foreground {
+  color: var(--landing-blue);
+}
+html[data-landing-theme="dark"] .landing-shell .hover\:bg-primary\/90:hover {
+  background: color-mix(in srgb, var(--landing-blue) 90%, #000);
 }
