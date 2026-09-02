@@ -336,12 +336,6 @@ html[data-landing-theme="dark"] .landing-header {
 .landing-mobile-menu button:hover {
   background: color-mix(in srgb, var(--landing-blue) 10%, transparent);
 }
-.landing-shell .bg-primary-soft {
-  background: color-mix(in srgb, var(--landing-blue) 12%, var(--landing-surface));
-}
-.landing-shell .text-accent-foreground {
-  color: var(--landing-blue);
-}
 .landing-shell .bg-primary {
   background: var(--landing-blue);
 }
@@ -390,9 +384,6 @@ html[data-landing-theme="dark"] .landing-header {
 .landing-header .text-primary-strong {
   color: #059669;
 }
-.landing-shell .hover\:bg-primary\/90:hover {
-  background: color-mix(in srgb, var(--landing-blue) 90%, #000);
-}
 .landing-shell + * {
   background: var(--landing-bg);
 }
@@ -405,19 +396,40 @@ html[data-landing-theme="dark"] .landing-header {
   }
 }
 
-.landing-shell .bg-surface,
-.landing-shell .bg-surface-muted {
-  background: var(--landing-surface);
-}
-.landing-shell .bg-background {
-  background: var(--landing-bg);
-}
-.landing-header .bg-primary {
-  background: var(--landing-blue);
-}
-.landing-header .text-primary-strong {
-  color: var(--landing-blue);
-}
 html[data-landing-theme="dark"] .landing-shell .text-foreground {
   color: var(--landing-text);
+}
+html[data-landing-theme="dark"] .landing-shell .landing-tool-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+html[data-landing-theme="dark"] .landing-shell .text-primary-strong {
+  color: var(--landing-blue);
+}
+html[data-landing-theme="dark"] .landing-shell .bg-surface,
+html[data-landing-theme="dark"] .landing-shell .bg-surface-muted {
+  background: #1e293b;
+}
+html[data-landing-theme="dark"] .landing-shell .bg-background {
+  background: #0f172a;
+}
+html[data-landing-theme="dark"] .landing-shell .text-primary-foreground {
+  color: #0f172a;
+}
+html[data-landing-theme="dark"] .landing-shell .landing-privacy-banner {
+  background: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
+  border-color: color-mix(in srgb, var(--landing-blue) 38%, #334155);
+  color: #f8fafc;
+}
+html[data-landing-theme="dark"] .landing-shell .landing-privacy-banner svg {
+  color: var(--landing-blue);
+}
+html[data-landing-theme="dark"] .landing-shell .bg-primary-soft {
+  background: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
+}
+html[data-landing-theme="dark"] .landing-shell .text-accent-foreground {
+  color: var(--landing-blue);
+}
+html[data-landing-theme="dark"] .landing-shell .hover\:bg-primary\/90:hover {
+  background: color-mix(in srgb, var(--landing-blue) 90%, #000);
 }
