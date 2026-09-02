@@ -163,11 +163,11 @@
   backdrop-filter: blur(12px);
 }
 .landing-header {
-  --landing-bg: #0f172a;
-  --landing-surface: #1e293b;
-  --landing-text: #f8fafc;
-  --landing-muted: #94a3b8;
-  --landing-border: #334155;
+  --landing-bg: #f8fafc;
+  --landing-surface: #ffffff;
+  --landing-text: #1e293b;
+  --landing-muted: #64748b;
+  --landing-border: #e2e8f0;
   --landing-blue: #10b981;
   background: color-mix(in srgb, var(--landing-bg) 92%, transparent);
   color: var(--landing-text);
@@ -189,11 +189,11 @@ html[data-landing-theme="dark"] .landing-header {
   border-color: var(--landing-border);
 }
 .landing-shell {
-  --landing-bg: #0f172a;
-  --landing-surface: #1e293b;
-  --landing-text: #f8fafc;
-  --landing-muted: #94a3b8;
-  --landing-border: #334155;
+  --landing-bg: #f8fafc;
+  --landing-surface: #ffffff;
+  --landing-text: #1e293b;
+  --landing-muted: #64748b;
+  --landing-border: #e2e8f0;
   --landing-blue: #10b981;
   background: var(--landing-bg);
   color: var(--landing-text);
@@ -346,7 +346,49 @@ html[data-landing-theme="dark"] .landing-header {
   background: var(--landing-blue);
 }
 .landing-shell .text-primary-foreground {
-  color: #0f172a;
+  color: #ffffff;
+}
+.landing-shell .hover\:bg-primary\/90:hover {
+  background: #059669;
+}
+.landing-shell .landing-tool-card {
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+.landing-shell .landing-tool-card:hover {
+  box-shadow: var(--shadow-lift);
+}
+.landing-shell .landing-privacy-banner {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+.landing-shell .landing-privacy-banner svg {
+  color: #059669;
+}
+.landing-shell .bg-primary-soft {
+  background: #ecfdf5;
+}
+.landing-shell .text-accent-foreground {
+  color: #059669;
+}
+.landing-shell .text-primary-strong {
+  color: #059669;
+}
+.landing-shell .bg-surface,
+.landing-shell .bg-surface-muted {
+  background: #ffffff;
+}
+.landing-shell .bg-background {
+  background: #f8fafc;
+}
+.landing-header .bg-primary {
+  background: var(--landing-blue);
+}
+.landing-header .text-primary-strong {
+  color: #059669;
 }
 .landing-shell .hover\:bg-primary\/90:hover {
   background: color-mix(in srgb, var(--landing-blue) 90%, #000);
