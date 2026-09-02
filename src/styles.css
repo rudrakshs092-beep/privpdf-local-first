@@ -243,6 +243,25 @@ html[data-landing-theme="dark"] .landing-header {
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+.landing-open-tool-btn {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  border-radius: 9999px;
+  border: 0;
+  background: var(--landing-open-bg);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  color: var(--landing-open-text);
+  transition: background 0.15s ease;
+}
+.landing-open-tool-btn:hover {
+  background: var(--landing-open-hover);
+}
 .landing-search {
   min-height: 2.75rem;
   border: 1px solid var(--landing-border);
