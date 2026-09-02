@@ -72,14 +72,9 @@ export function ToolGrid() {
         </div>
 
         {filteredTools.length ? (
-          <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTools.map((tool) => {
-              const Icon = icons[tool.icon] ?? Combine;
-              return (
-                <li key={tool.to}>
-                  <Link
-                    to={tool.to}
-                    className="landing-tool-card group flex h-full min-w-0 flex-col items-start rounded-xl border border-border p-4 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lift"
+          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+...
+                    className="landing-tool-card group flex h-full min-w-0 flex-col items-start rounded-xl border border-border p-5 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 sm:p-6"
                   >
                     <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-accent-foreground">
                       <Icon className="size-5" aria-hidden="true" />
