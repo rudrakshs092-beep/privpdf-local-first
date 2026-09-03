@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
 
 const links = [
-  { label: "Tools", to: "/#tools" as const },
+  { label: "Tools", to: "/tools" as const },
   { label: "How it works", to: "/how-it-works" as const },
   { label: "Privacy", to: "/privacy" as const },
   { label: "FAQ", to: "/faq" as const },
