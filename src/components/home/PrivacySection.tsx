@@ -1,35 +1,55 @@
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, Laptop, Globe, Cpu, FileDown } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+
+const flow = [
+  { icon: Laptop, label: "Your device" },
+  { icon: Globe, label: "Your browser" },
+  { icon: Cpu, label: "Local processing" },
+  { icon: FileDown, label: "Your result" },
+];
 
 export function PrivacySection() {
   return (
     <section className="border-b border-border bg-surface">
-      <div className="section-x grid gap-8 py-12 sm:py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
+      <div className="section-x grid gap-8 py-10 sm:py-14 lg:grid-cols-2 lg:items-start lg:gap-14">
         <div className="min-w-0">
-          <p className="landing-eyebrow">Your privacy matters</p>
-          <h2 className="mt-2 text-2xl font-extrabold sm:text-3xl lg:text-4xl">
-            Your documents are personal.
-          </h2>
-        </div>
+          <p className="landing-eyebrow">Privacy</p>
+          <h2 className="mt-2 text-xl font-bold sm:text-2xl">Your files stay on your device.</h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            PrivPDF processes your files directly in your browser. Your PDF files are not uploaded
+            to a server for processing.
+          </p>
 
-        <div className="min-w-0 rounded-xl border border-border bg-background p-5 sm:p-6">
-          <div className="flex items-start gap-3">
-            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary-soft text-accent-foreground">
-              <ShieldCheck className="size-5" aria-hidden="true" />
-            </span>
-            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-              PrivPDF processes supported files directly in your browser, so your files don&apos;t
-              need to be uploaded.
+          <details className="mt-5 rounded-lg border border-border bg-background p-4">
+            <summary className="cursor-pointer text-sm font-semibold">Want to verify?</summary>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Open your browser&apos;s Developer Tools, switch to the Network tab, and run any tool.
+              You won&apos;t see your file being sent anywhere.
             </p>
-          </div>
+          </details>
+
           <Link
             to="/privacy"
-            className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-md px-2 text-sm font-semibold text-primary-strong transition-colors hover:bg-primary-soft"
+            className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-primary-strong transition-colors hover:bg-primary-soft"
           >
-            Learn about privacy
+            Read the privacy page
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
+
+        <ol className="grid min-w-0 gap-2.5 rounded-xl border border-border bg-background p-4 sm:p-5">
+          {flow.map((step, index) => (
+            <li key={step.label} className="flex min-w-0 items-center gap-3">
+              <span className="tool-card-icon">
+                <step.icon className="size-[1.15rem]" aria-hidden="true" />
+              </span>
+              <span className="min-w-0 truncate text-sm font-medium">{step.label}</span>
+              {index < flow.length - 1 ? (
+                <span className="ml-auto shrink-0 text-xs text-muted-foreground">↓</span>
+              ) : null}
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

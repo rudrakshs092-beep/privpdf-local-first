@@ -1,32 +1,37 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 export function Hero() {
   return (
-    <section className="landing-hero border-b border-border">
-      <div className="section-x py-10 sm:py-12 lg:py-16">
-        <div className="max-w-3xl">
+    <section className="border-b border-border bg-surface">
+      <div className="section-x py-10 sm:py-14">
+        <div className="max-w-2xl">
           <p className="landing-eyebrow">PrivPDF</p>
-          <h1 className="mt-3 max-w-2xl text-[2rem] font-extrabold leading-[1.08] sm:text-5xl lg:text-[3.25rem]">
-            Simple PDF tools for everyday files.
+          <h1 className="mt-3 text-[1.9rem] font-extrabold leading-[1.12] sm:text-4xl lg:text-[2.75rem]">
+            Simple PDF tools. Your files stay with you.
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-            Easy PDF tools that work directly in your browser. No account required.
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-muted-foreground">
+            Merge, split, compress and manage PDF files right inside your browser.
           </p>
-          <div className="landing-privacy-banner mt-5 flex max-w-2xl items-start gap-3 rounded-xl border px-4 py-3 text-sm font-semibold leading-relaxed">
-            <ShieldCheck className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
-            <span>
-              100% Client-Side Privacy: No Login, No Sign-up, No Database. Your files never leave
-              your device.
-            </span>
+
+          <p className="landing-privacy-banner mt-5 inline-flex max-w-full items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold sm:text-sm">
+            <Lock className="size-4 shrink-0" aria-hidden="true" />
+            <span className="min-w-0">No upload · No account · Browser-based</span>
+          </p>
+
+          <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+            <Button asChild className="w-full sm:w-auto">
+              <a href="#tools">
+                Explore PDF Tools
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </a>
+            </Button>
+            <Button asChild variant="secondary" className="w-full sm:w-auto">
+              <Link to="/how-it-works">How it works</Link>
+            </Button>
           </div>
-          <Link
-            to="/how-it-works"
-            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-primary-strong transition-colors hover:bg-primary-soft"
-          >
-            See how it works
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
         </div>
       </div>
     </section>

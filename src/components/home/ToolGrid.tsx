@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import {
+  ArrowRight,
   Combine,
   FileImage,
   Hash,
@@ -31,30 +32,33 @@ const icons: Record<string, LucideIcon> = {
   watermark: Stamp,
 };
 
+const popular = new Set(["/merge-pdf", "/split-pdf", "/compress-pdf"]);
+
 export function ToolGrid() {
   const [query, setQuery] = useState("");
-  const filteredTools = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
+  const normalized = query.trim().toLowerCase();
+
+  const filtered = useMemo(() => {
     if (!normalized) return tools;
     return tools.filter((tool) =>
       `${tool.name} ${tool.description}`.toLowerCase().includes(normalized),
     );
-  }, [query]);
+  }, [normalized]);
+
+  const popularTools = filtered.filter((tool) => popular.has(tool.to));
+  const otherTools = filtered.filter((tool) => !popular.has(tool.to));
 
   return (
-    <section id="tools" className="landing-tools-section border-b border-border">
-      <div className="section-x py-10 sm:py-12">
+    <section id="tools" className="scroll-mt-20 border-b border-border">
+      <div className="section-x py-10 sm:py-14">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <header className="max-w-xl">
-            <h2 className="text-2xl font-extrabold sm:text-3xl">What do you need to do?</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Pick a tool below. Each one is made to be simple and easy to use.
+            <h2 className="text-xl font-bold sm:text-2xl">What do you need to do?</h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+              Pick a tool. Every one of them runs in your browser.
             </p>
           </header>
-          <label
-            id="tool-search"
-            className="landing-search flex w-full items-center gap-2 sm:max-w-sm"
-          >
+          <label id="tool-search" className="landing-search flex w-full items-center gap-2 sm:max-w-xs">
             <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <span className="sr-only">Search PDF tools</span>
             <input
@@ -71,36 +75,59 @@ export function ToolGrid() {
           </label>
         </div>
 
-        {filteredTools.length ? (
-          <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-            {filteredTools.map((tool) => {
-              const Icon = icons[tool.icon] ?? Combine;
-              return (
-                <li key={tool.to}>
-                  <Link
-                    to={tool.to}
-                    className="landing-tool-card group flex h-full min-w-0 flex-col items-start rounded-xl border border-border p-5 transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-primary/40 sm:p-6"
-                  >
-                    <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-accent-foreground">
-                      <Icon className="size-5" aria-hidden="true" />
-                    </span>
-                    <h3 className="mt-3 text-base font-bold">{tool.name}</h3>
-                    <p className="mt-1 min-h-10 text-sm leading-relaxed text-muted-foreground">
-                      {tool.description}
-                    </p>
-                    <span className="landing-open-tool-btn mt-3">Open Tool</span>
-                  </Link>
-
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p className="mt-6 rounded-xl border border-dashed border-border-strong px-4 py-6 text-center text-sm text-muted-foreground">
+        {filtered.length === 0 ? (
+          <p className="mt-6 rounded-xl border border-dashed border-border-strong px-4 py-8 text-center text-sm text-muted-foreground">
             No matching tools. Try a different search.
           </p>
+        ) : (
+          <div className="mt-7 space-y-8">
+            {popularTools.length ? (
+              <ToolSection title="Popular tools" items={popularTools} />
+            ) : null}
+            {otherTools.length ? (
+              <ToolSection
+                title={popularTools.length ? "More PDF tools" : "PDF tools"}
+                items={otherTools}
+              />
+            ) : null}
+          </div>
         )}
       </div>
     </section>
+  );
+}
+
+function ToolSection({ title, items }: { title: string; items: typeof tools }) {
+  return (
+    <div>
+      <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        {title}
+      </h3>
+      <ul className="mt-3.5 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+        {items.map((tool) => {
+          const Icon = icons[tool.icon] ?? Combine;
+          return (
+            <li key={tool.to}>
+              <Link
+                to={tool.to}
+                className="landing-tool-card group flex h-full min-w-0 flex-col items-start p-4 sm:p-5"
+              >
+                <span className="tool-card-icon">
+                  <Icon className="size-[1.15rem]" aria-hidden="true" />
+                </span>
+                <h4 className="mt-3 text-[0.95rem] font-semibold">{tool.name}</h4>
+                <p className="mt-1 min-w-0 text-sm leading-relaxed text-muted-foreground">
+                  {tool.description}
+                </p>
+                <span className="tool-card-cta mt-3.5">
+                  Use Tool
+                  <ArrowRight className="size-3.5" aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
