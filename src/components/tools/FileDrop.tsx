@@ -39,24 +39,26 @@ export function FileDrop({
         if (!disabled) handle(event.dataTransfer.files);
       }}
       className={cn(
-        "flex min-h-56 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface-muted px-4 py-10 text-center transition-colors sm:px-5",
+        "flex min-h-48 flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-background px-4 py-8 text-center transition-colors",
         over && !disabled && "border-primary bg-primary-soft",
         disabled && "cursor-not-allowed opacity-60",
       )}
     >
-      <span className="grid size-11 place-items-center rounded-lg bg-primary-soft text-accent-foreground">
+      <span className="tool-card-icon size-10">
         <UploadCloud className="size-5" aria-hidden="true" />
       </span>
-      <p className="mt-4 text-sm font-semibold">{label}</p>
-      <p className="mt-1 text-sm text-muted-foreground">{hint}</p>
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={disabled}
-        className="mt-5 inline-flex touch-manipulation min-h-11 max-w-full items-center rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong hover:text-background disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-4 inline-flex min-h-11 max-w-full touch-manipulation items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-strong disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Choose file{multiple ? "s" : ""}
+        {label}
       </button>
+      <p className="mt-3 hidden text-sm text-muted-foreground sm:block">
+        or drop your file{multiple ? "s" : ""} here
+      </p>
+      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{hint}</p>
       <input
         ref={inputRef}
         type="file"

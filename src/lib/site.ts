@@ -10,13 +10,13 @@ export type ToolRoute =
   | "/page-numbers"
   | "/text-watermark";
 
-export type NavRoute = "/tools" | "/how-it-works" | "/privacy" | "/about";
+export type NavRoute = "/tools" | "/how-it-works" | "/privacy" | "/faq";
 
 export const mainNav: { label: string; to: NavRoute }[] = [
   { label: "Tools", to: "/tools" },
-  { label: "How It Works", to: "/how-it-works" },
+  { label: "How it works", to: "/how-it-works" },
   { label: "Privacy", to: "/privacy" },
-  { label: "About", to: "/about" },
+  { label: "FAQ", to: "/faq" },
 ];
 
 export const tools: {
