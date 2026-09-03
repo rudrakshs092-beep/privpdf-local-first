@@ -6,8 +6,9 @@
 
 /*
  * PrivPDF design system.
- * Brand: light, calm teal, clean, minimal, privacy-first.
- * Change brand colors here only — never hardcode colors in components.
+ * Modern, clean, professional utility look: light blue-gray canvas, white cards,
+ * one modern blue accent. Green = success only, red = error only.
+ * Change brand values here only — never hardcode colors in components.
  */
 
 @theme inline {
@@ -34,74 +35,83 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
-  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -16px rgb(15 23 42 / 0.1);
-  --shadow-lift: 0 2px 6px rgb(15 23 42 / 0.05), 0 18px 36px -20px rgb(15 23 42 / 0.18);
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04);
+  --shadow-lift: 0 1px 2px rgb(15 23 42 / 0.05), 0 10px 24px -18px rgb(15 23 42 / 0.35);
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.625rem;
 
-  /* Brand */
-  --primary: #10b981;
-  --primary-strong: #059669;
+  /* Brand accent */
+  --primary: #2563eb;
+  --primary-strong: #1d4ed8;
   --primary-foreground: #ffffff;
-  --primary-soft: #ecfdf5;
+  --primary-soft: #eff6ff;
 
   /* Neutrals */
-  --background: #f8fafc;
-  --foreground: #1e293b;
+  --background: #f6f8fb;
+  --foreground: #0f172a;
   --surface: #ffffff;
   --surface-muted: #f1f5f9;
   --card: #ffffff;
-  --card-foreground: #1e293b;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #1e293b;
+  --popover-foreground: #0f172a;
   --secondary: #f1f5f9;
-  --secondary-foreground: #1e293b;
+  --secondary-foreground: #0f172a;
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #ecfdf5;
-  --accent-foreground: #059669;
+  --muted-foreground: #5b6b82;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
+
+  /* Status */
+  --success: #15803d;
+  --success-soft: #f0fdf4;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
+
+  --border: #e5e9f0;
   --border-strong: #cbd5e1;
-  --input: #e2e8f0;
-  --ring: #10b981;
+  --input: #e5e9f0;
+  --ring: #2563eb;
 }
 
-
 .dark {
-  --background: #0f172a;
-  --foreground: #e5edf9;
-  --surface: #111c30;
-  --surface-muted: #16233a;
-  --card: #111c30;
-  --card-foreground: #e5edf9;
-  --popover: #111c30;
-  --popover-foreground: #e5edf9;
-  --primary: #2dd4bf;
-  --primary-strong: #5eead4;
-  --primary-foreground: #042f2e;
-  --primary-soft: #123b3a;
-  --secondary: #16233a;
-  --secondary-foreground: #ccfbf1;
-  --muted: #16233a;
-  --muted-foreground: #9aabc2;
-  --accent: #123b3a;
-  --accent-foreground: #99f6e4;
-  --border: #263650;
-  --border-strong: #3b4f70;
-  --input: #263650;
-  --ring: #5eead4;
+  --background: #0b1220;
+  --foreground: #e8eefb;
+  --surface: #121a2b;
+  --surface-muted: #172136;
+  --card: #121a2b;
+  --card-foreground: #e8eefb;
+  --popover: #121a2b;
+  --popover-foreground: #e8eefb;
+  --primary: #4f8bff;
+  --primary-strong: #7ba9ff;
+  --primary-foreground: #0b1220;
+  --primary-soft: #16233c;
+  --secondary: #172136;
+  --secondary-foreground: #e8eefb;
+  --muted: #172136;
+  --muted-foreground: #9fb0c9;
+  --accent: #16233c;
+  --accent-foreground: #9dc0ff;
+  --success: #4ade80;
+  --success-soft: #14251c;
+  --destructive: #f87171;
+  --border: #243149;
+  --border-strong: #35476a;
+  --input: #243149;
+  --ring: #7ba9ff;
 }
 
 @layer base {
@@ -126,7 +136,7 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.018em;
     text-wrap: balance;
   }
 
@@ -139,141 +149,98 @@
 @utility section-x {
   margin-inline: auto;
   width: 100%;
-  max-width: 76rem;
-  padding-inline: 1.25rem;
-  @media (min-width: 768px) {
+  max-width: 72rem;
+  padding-inline: 1rem;
+  @media (min-width: 640px) {
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 1024px) {
     padding-inline: 2rem;
   }
 }
 
-@utility hairline-grid {
-  background-image:
-    linear-gradient(to right, var(--color-border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
+/* ---- Shared product chrome ---------------------------------------------- */
 
-/* Landing page visual system: shared calm teal identity across the product. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--border);
-  background: color-mix(in srgb, var(--background) 90%, transparent);
-  backdrop-filter: blur(12px);
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+  backdrop-filter: blur(10px);
 }
-.landing-header {
-  --landing-bg: #f8fafc;
-  --landing-surface: #ffffff;
-  --landing-text: #1e293b;
-  --landing-muted: #64748b;
-  --landing-border: #e2e8f0;
-  --landing-blue: #10b981;
-  background: color-mix(in srgb, var(--landing-bg) 92%, transparent);
-  color: var(--landing-text);
-  border-color: var(--landing-border);
+
+.landing-header-link {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.7rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
-html[data-landing-theme="dark"] .landing-shell,
-html[data-landing-theme="dark"] .landing-header {
-  --landing-bg: #0f172a;
-  --landing-surface: #1e293b;
-  --landing-text: #f8fafc;
-  --landing-muted: #94a3b8;
-  --landing-border: #334155;
-  --landing-blue: #10b981;
-  --landing-open-bg: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
-  --landing-open-hover: #0f766e;
-  --landing-open-text: #99f6e4;
-  background: var(--landing-bg);
-  color: var(--landing-text);
+.landing-header-link:hover {
+  background: var(--surface-muted);
+  color: var(--foreground);
 }
-html[data-landing-theme="dark"] .landing-header {
-  background: color-mix(in srgb, #0f172a 92%, transparent);
-  border-color: var(--landing-border);
+
+.landing-theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  min-height: 2.25rem;
+  min-width: 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--muted-foreground);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
-.landing-shell {
-  --landing-bg: #f8fafc;
-  --landing-surface: #ffffff;
-  --landing-text: #1e293b;
-  --landing-muted: #64748b;
-  --landing-border: #e2e8f0;
-  --landing-blue: #10b981;
-  --landing-open-bg: #ecfdf5;
-  --landing-open-hover: #a7f3d0;
-  --landing-open-text: #065f46;
-  background: var(--landing-bg);
-  color: var(--landing-text);
+.landing-theme-toggle:hover {
+  background: var(--surface-muted);
+  color: var(--foreground);
 }
-.landing-shell .border-border {
-  border-color: var(--landing-border);
+
+.landing-mobile-menu {
+  background: var(--surface);
+  color: var(--foreground);
 }
-.landing-shell .text-muted-foreground {
-  color: var(--landing-muted);
-}
-.landing-shell .landing-hero,
-.landing-shell .landing-tools-section {
-  background: var(--landing-bg);
-}
-.landing-shell .landing-flow-card,
-.landing-shell .landing-tool-card {
-  background: var(--landing-surface);
-  border-color: var(--landing-border);
-}
-.landing-shell .landing-flow-step {
-  background: color-mix(in srgb, var(--landing-bg) 70%, var(--landing-surface));
-  border-color: var(--landing-border);
-}
-.landing-shell .landing-badge {
-  background: color-mix(in srgb, var(--landing-blue) 10%, var(--landing-surface));
-  border-color: color-mix(in srgb, var(--landing-blue) 28%, var(--landing-border));
-  color: var(--landing-blue);
-}
-.landing-shell .landing-privacy-banner {
-  background: color-mix(in srgb, var(--landing-blue) 12%, var(--landing-surface));
-  border-color: color-mix(in srgb, var(--landing-blue) 38%, var(--landing-border));
-  color: var(--landing-text);
-}
-.landing-shell .landing-privacy-banner svg {
-  color: var(--landing-blue);
-}
-.landing-shell .landing-eyebrow {
-  color: var(--landing-blue);
-  font-size: 0.7rem;
+
+.landing-eyebrow {
+  color: var(--primary-strong);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.landing-open-tool-btn {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  gap: 0.25rem;
-  white-space: nowrap;
-  border-radius: 9999px;
-  border: 0;
-  background: var(--landing-open-bg);
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.25rem;
-  color: var(--landing-open-text);
-  transition: background 0.15s ease;
+
+/* Privacy badge (hero + tool pages) */
+.landing-privacy-banner {
+  background: var(--primary-soft);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, var(--border));
+  color: var(--foreground);
 }
-.landing-open-tool-btn:hover {
-  background: var(--landing-open-hover);
+.landing-privacy-banner svg {
+  color: var(--primary-strong);
 }
+
+/* Search field */
 .landing-search {
   min-height: 2.75rem;
-  border: 1px solid var(--landing-border);
-  border-radius: 0.75rem;
-  background: var(--landing-surface);
-  padding: 0.5rem 0.7rem;
-  color: var(--landing-text);
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--surface);
+  padding: 0.45rem 0.7rem;
+  color: var(--foreground);
 }
 .landing-search:focus-within {
-  border-color: var(--landing-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--landing-blue) 18%, transparent);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
 }
 .landing-search input {
   min-width: 0;
@@ -282,60 +249,89 @@ html[data-landing-theme="dark"] .landing-header {
   outline: 0;
   background: transparent;
   color: inherit;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
 }
 .landing-search input::placeholder {
-  color: var(--landing-muted);
+  color: var(--muted-foreground);
 }
 .landing-search button {
   display: grid;
-  min-height: 2.75rem;
-  min-width: 2.75rem;
-  place-items: center;
-  color: var(--landing-muted);
-}
-.landing-header-actions {
-  position: relative;
-  color: var(--landing-muted);
-}
-.landing-header-link,
-.landing-theme-toggle {
-  display: inline-flex;
   min-height: 2.25rem;
-  align-items: center;
-  gap: 0.45rem;
-  border-radius: 0.65rem;
-  padding: 0.45rem 0.65rem;
-  color: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
+  min-width: 2.25rem;
+  place-items: center;
+  border-radius: 0.5rem;
+  color: var(--muted-foreground);
+}
+.landing-search button:hover {
+  background: var(--surface-muted);
+  color: var(--foreground);
+}
+
+/* Tool cards */
+.landing-tool-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
   transition:
-    background 0.15s,
-    color 0.15s;
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
-.landing-header-link:hover,
-.landing-theme-toggle:hover {
-  background: color-mix(in srgb, var(--landing-blue) 10%, transparent);
-  color: var(--landing-text);
+.landing-tool-card:hover {
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
 }
-.landing-theme-toggle {
-  border: 1px solid var(--landing-border);
+
+.tool-card-icon {
+  display: grid;
+  place-items: center;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex: none;
+  border-radius: 0.5rem;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
 }
+
+.tool-card-cta {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--primary-soft);
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary-strong);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.landing-tool-card:hover .tool-card-cta {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* Settings popover in the header */
 .landing-settings-popover {
   position: absolute;
   right: 0;
   top: 3rem;
   width: 12rem;
-  border: 1px solid var(--landing-border);
-  border-radius: 0.75rem;
-  background: var(--landing-surface, #fff);
-  padding: 0.75rem;
-  box-shadow: 0 12px 28px rgb(15 23 42 / 0.16);
-  color: var(--landing-text);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--surface);
+  padding: 0.7rem;
+  box-shadow: var(--shadow-lift);
+  color: var(--foreground);
 }
 .landing-settings-popover p {
-  color: var(--landing-muted);
-  font-size: 0.7rem;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -344,117 +340,11 @@ html[data-landing-theme="dark"] .landing-header {
   margin-top: 0.5rem;
   width: 100%;
   border-radius: 0.5rem;
-  padding: 0.55rem;
+  padding: 0.5rem;
   text-align: left;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 .landing-settings-popover button:hover {
-  background: color-mix(in srgb, var(--landing-blue) 10%, transparent);
-}
-.landing-mobile-menu {
-  background: var(--landing-bg);
-  color: var(--landing-text);
-  border-color: var(--landing-border);
-}
-.landing-mobile-menu a:hover,
-.landing-mobile-menu button:hover {
-  background: color-mix(in srgb, var(--landing-blue) 10%, transparent);
-}
-.landing-shell .bg-primary {
-  background: var(--landing-blue);
-}
-.landing-shell .text-primary-foreground {
-  color: #ffffff;
-}
-.landing-shell .hover\:bg-primary\/90:hover {
-  background: #059669;
-}
-.landing-shell .landing-tool-card {
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s,
-    transform 0.15s;
-}
-.landing-shell .landing-tool-card:hover {
-  box-shadow: var(--shadow-lift);
-}
-.landing-shell .landing-privacy-banner {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #065f46;
-}
-.landing-shell .landing-privacy-banner svg {
-  color: #059669;
-}
-.landing-shell .bg-primary-soft {
-  background: #ecfdf5;
-}
-.landing-shell .text-accent-foreground {
-  color: #059669;
-}
-.landing-shell .text-primary-strong {
-  color: #059669;
-}
-.landing-shell .bg-surface,
-.landing-shell .bg-surface-muted {
-  background: #ffffff;
-}
-.landing-shell .bg-background {
-  background: #f8fafc;
-}
-.landing-header .bg-primary {
-  background: var(--landing-blue);
-}
-.landing-header .text-primary-strong {
-  color: #059669;
-}
-.landing-shell + * {
-  background: var(--landing-bg);
-}
-@media (max-width: 767px) {
-  .landing-header-actions {
-    display: none;
-  }
-  .landing-search {
-    width: 100%;
-  }
-}
-
-html[data-landing-theme="dark"] .landing-shell .text-foreground {
-  color: var(--landing-text);
-}
-html[data-landing-theme="dark"] .landing-shell .landing-tool-card {
-  background: #1e293b;
-  border-color: #334155;
-}
-html[data-landing-theme="dark"] .landing-shell .text-primary-strong {
-  color: var(--landing-blue);
-}
-html[data-landing-theme="dark"] .landing-shell .bg-surface,
-html[data-landing-theme="dark"] .landing-shell .bg-surface-muted {
-  background: #1e293b;
-}
-html[data-landing-theme="dark"] .landing-shell .bg-background {
-  background: #0f172a;
-}
-html[data-landing-theme="dark"] .landing-shell .text-primary-foreground {
-  color: #0f172a;
-}
-html[data-landing-theme="dark"] .landing-shell .landing-privacy-banner {
-  background: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
-  border-color: color-mix(in srgb, var(--landing-blue) 38%, #334155);
-  color: #f8fafc;
-}
-html[data-landing-theme="dark"] .landing-shell .landing-privacy-banner svg {
-  color: var(--landing-blue);
-}
-html[data-landing-theme="dark"] .landing-shell .bg-primary-soft {
-  background: color-mix(in srgb, var(--landing-blue) 12%, #1e293b);
-}
-html[data-landing-theme="dark"] .landing-shell .text-accent-foreground {
-  color: var(--landing-blue);
-}
-html[data-landing-theme="dark"] .landing-shell .hover\:bg-primary\/90:hover {
-  background: color-mix(in srgb, var(--landing-blue) 90%, #000);
+  background: var(--surface-muted);
 }
