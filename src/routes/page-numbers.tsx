@@ -116,6 +116,7 @@ function Page() {
       setFile(next);
       setBytes(nextBytes);
       setThumbnails(urls);
+      if (urls.length < 3) setSkipFirst("0");
       setProgress(100);
       setStatus(null);
       setSuccess(

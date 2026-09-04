@@ -49,6 +49,23 @@ const positions: { value: WatermarkPosition; label: string }[] = [
   { value: "bottom-right", label: "Bottom right" },
 ];
 
+/** Watermark text colours. The first entry stays the existing default. */
+const colors: { value: string; label: string; rgb: [number, number, number] }[] = [
+  { value: "grey", label: "Grey", rgb: [0.35, 0.35, 0.35] },
+  { value: "black", label: "Black", rgb: [0, 0, 0] },
+  { value: "white", label: "White", rgb: [1, 1, 1] },
+  { value: "red", label: "Red", rgb: [0.78, 0.11, 0.11] },
+  { value: "blue", label: "Blue", rgb: [0.15, 0.35, 0.85] },
+];
+
+const cssColor: Record<string, string> = {
+  grey: "#595959",
+  black: "#000000",
+  white: "#ffffff",
+  red: "#c71c1c",
+  blue: "#2659d9",
+};
+
 function isPdf(file: File) {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
 }
