@@ -365,6 +365,34 @@ function Page() {
                   className="mt-3 block h-2 w-full cursor-pointer accent-primary"
                 />
               </label>
+              <fieldset className="text-sm font-semibold sm:col-span-2">
+                <legend>Text colour</legend>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {colors.map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setColor(item.value)}
+                      aria-pressed={color === item.value}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors ${
+                        color === item.value
+                          ? "border-primary-strong bg-primary-soft text-primary-strong"
+                          : "border-border bg-background text-foreground"
+                      }`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="size-4 shrink-0 rounded-full border border-border-strong"
+                        style={{ background: cssColor[item.value] }}
+                      />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs font-normal text-muted-foreground">
+                  Pick white for dark or scanned pages.
+                </p>
+              </fieldset>
             </div>
 
             <div>
@@ -398,9 +426,10 @@ function Page() {
                         />
                         {selected && (
                           <span
-                            className={`absolute ${previewPosition(position)} max-w-[88%] truncate rounded bg-background/85 px-1.5 py-0.5 text-[10px] font-bold text-foreground shadow-sm`}
+                            className={`absolute ${previewPosition(position)} max-w-[88%] truncate rounded bg-background/85 px-1.5 py-0.5 text-[10px] font-bold shadow-sm`}
                             style={{
                               opacity: opacityValue / 100,
+                              color: cssColor[color],
                               transform: `${position === "center" ? "translate(-50%, -50%) " : ""}rotate(${rotationValue}deg)`,
                             }}
                           >
