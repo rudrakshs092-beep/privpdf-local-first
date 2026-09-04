@@ -112,8 +112,12 @@ function Page() {
               : "Some files were skipped because they are empty or not PDFs.",
           );
           if (accepted.length > 0) {
-            setFiles((current) => [...current, ...accepted]);
-            setSuccess(`${accepted.length} PDF${accepted.length === 1 ? "" : "s"} ready to merge.`);
+            setFiles((current) => {
+              const next = [...current, ...accepted];
+              // Only a real merge (2+ files) counts as a ready state.
+              setSuccess(next.length >= 2 ? `${next.length} PDFs ready to merge.` : null);
+              return next;
+            });
           }
         }}
       />
@@ -161,6 +165,12 @@ function Page() {
         success={success}
         error={error}
       />
+
+      {files.length === 1 && !busy ? (
+        <p className="mt-4 rounded-lg border border-border bg-surface-muted px-3 py-2.5 text-sm font-medium text-muted-foreground">
+          Please upload at least 2 PDF files to merge.
+        </p>
+      ) : null}
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Button disabled={files.length < 2 || busy} onClick={merge}>

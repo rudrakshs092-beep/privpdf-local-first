@@ -116,6 +116,7 @@ function Page() {
       setFile(next);
       setBytes(nextBytes);
       setThumbnails(urls);
+      if (urls.length < 3) setSkipFirst("0");
       setProgress(100);
       setStatus(null);
       setSuccess(
@@ -279,9 +280,19 @@ function Page() {
                   className="mt-2 flex h-10 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="0">Number every page</option>
-                  <option value="1">Skip first page</option>
-                  <option value="2">Skip first 2 pages</option>
+                  {/* Skipping every page would leave nothing to number. */}
+                  <option value="1" disabled={thumbnails.length < 2}>
+                    Skip first page
+                  </option>
+                  <option value="2" disabled={thumbnails.length < 3}>
+                    Skip first 2 pages
+                  </option>
                 </select>
+                {thumbnails.length < 2 ? (
+                  <span className="mt-2 block text-xs font-normal text-muted-foreground">
+                    This PDF has a single page, so it cannot be skipped.
+                  </span>
+                ) : null}
               </label>
             </div>
 

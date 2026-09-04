@@ -49,6 +49,23 @@ const positions: { value: WatermarkPosition; label: string }[] = [
   { value: "bottom-right", label: "Bottom right" },
 ];
 
+/** Watermark text colours. The first entry stays the existing default. */
+const colors: { value: string; label: string; rgb: [number, number, number] }[] = [
+  { value: "grey", label: "Grey", rgb: [0.35, 0.35, 0.35] },
+  { value: "black", label: "Black", rgb: [0, 0, 0] },
+  { value: "white", label: "White", rgb: [1, 1, 1] },
+  { value: "red", label: "Red", rgb: [0.78, 0.11, 0.11] },
+  { value: "blue", label: "Blue", rgb: [0.15, 0.35, 0.85] },
+];
+
+const cssColor: Record<string, string> = {
+  grey: "#595959",
+  black: "#000000",
+  white: "#ffffff",
+  red: "#c71c1c",
+  blue: "#2659d9",
+};
+
 function isPdf(file: File) {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
 }
@@ -100,6 +117,7 @@ function Page() {
   const [opacity, setOpacity] = useState("20");
   const [rotation, setRotation] = useState("0");
   const [fontSize, setFontSize] = useState("36");
+  const [color, setColor] = useState("grey");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const { results, clearResults, deliverPdf } = useToolResults();
@@ -230,7 +248,7 @@ function Page() {
           y: point.y,
           size: fontSizeValue,
           font,
-          color: rgb(0.35, 0.35, 0.35),
+          color: rgb(...(colors.find((item) => item.value === color) ?? colors[0]!).rgb),
           opacity: opacityValue,
           rotate: degrees(rotationValue),
         });
@@ -347,6 +365,34 @@ function Page() {
                   className="mt-3 block h-2 w-full cursor-pointer accent-primary"
                 />
               </label>
+              <fieldset className="text-sm font-semibold sm:col-span-2">
+                <legend>Text colour</legend>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {colors.map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setColor(item.value)}
+                      aria-pressed={color === item.value}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors ${
+                        color === item.value
+                          ? "border-primary-strong bg-primary-soft text-primary-strong"
+                          : "border-border bg-background text-foreground"
+                      }`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="size-4 shrink-0 rounded-full border border-border-strong"
+                        style={{ background: cssColor[item.value] }}
+                      />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 text-xs font-normal text-muted-foreground">
+                  Pick white for dark or scanned pages.
+                </p>
+              </fieldset>
             </div>
 
             <div>
@@ -380,9 +426,10 @@ function Page() {
                         />
                         {selected && (
                           <span
-                            className={`absolute ${previewPosition(position)} max-w-[88%] truncate rounded bg-background/85 px-1.5 py-0.5 text-[10px] font-bold text-foreground shadow-sm`}
+                            className={`absolute ${previewPosition(position)} max-w-[88%] truncate rounded bg-background/85 px-1.5 py-0.5 text-[10px] font-bold shadow-sm`}
                             style={{
                               opacity: opacityValue / 100,
+                              color: cssColor[color],
                               transform: `${position === "center" ? "translate(-50%, -50%) " : ""}rotate(${rotationValue}deg)`,
                             }}
                           >
