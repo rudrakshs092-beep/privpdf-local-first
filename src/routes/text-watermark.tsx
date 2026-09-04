@@ -117,6 +117,7 @@ function Page() {
   const [opacity, setOpacity] = useState("20");
   const [rotation, setRotation] = useState("0");
   const [fontSize, setFontSize] = useState("36");
+  const [color, setColor] = useState("grey");
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const { results, clearResults, deliverPdf } = useToolResults();
@@ -247,7 +248,7 @@ function Page() {
           y: point.y,
           size: fontSizeValue,
           font,
-          color: rgb(0.35, 0.35, 0.35),
+          color: rgb(...(colors.find((item) => item.value === color) ?? colors[0]!).rgb),
           opacity: opacityValue,
           rotate: degrees(rotationValue),
         });
