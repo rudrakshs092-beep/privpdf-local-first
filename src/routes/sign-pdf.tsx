@@ -351,8 +351,8 @@ function Page() {
             </div>
 
             <div>
-              <div className="flex flex-wrap items-end justify-between gap-3">
-                <div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+                <div className="min-w-0">
                   <h2 className="text-sm font-semibold">
                     2. Choose a page and place the signature
                   </h2>
@@ -360,12 +360,12 @@ function Page() {
                     Drag the signature to move it. Drag the corner handle to resize it.
                   </p>
                 </div>
-                <label className="text-sm font-semibold">
+                <label className="block w-full text-sm font-semibold sm:w-auto">
                   Page to sign
                   <select
                     value={selectedPage}
                     onChange={(event) => setSelectedPage(Number(event.target.value))}
-                    className="ml-2 h-10 rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="mt-1.5 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-ring sm:mt-0 sm:ml-2 sm:inline-block sm:w-auto"
                   >
                     {pages.map((page) => (
                       <option key={page.pageNumber} value={page.pageNumber}>
