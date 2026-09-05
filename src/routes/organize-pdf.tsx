@@ -104,6 +104,7 @@ function Page() {
           : "Could not read this PDF. It may be corrupted or not a PDF file.",
       );
       setFile(null);
+      setPages([]);
       setProgress(0);
       setStatus(null);
     } finally {
