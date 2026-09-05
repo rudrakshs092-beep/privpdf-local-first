@@ -377,9 +377,11 @@ function Page() {
               </div>
 
               {currentPage && (
+                // No overflow clipping: the drag/resize handles sit on the box edge
+                // and were being cut off on narrow screens.
                 <div
                   ref={previewRef}
-                  className="relative mx-auto mt-4 max-w-2xl overflow-hidden rounded-xl border border-border bg-surface-muted p-2"
+                  className="relative mx-auto mt-4 w-[calc(100%-1.5rem)] max-w-2xl rounded-xl border border-border bg-surface-muted p-2"
                   style={{ aspectRatio: `${currentPage.width} / ${currentPage.height}` }}
                 >
                   <img
@@ -408,10 +410,10 @@ function Page() {
                         draggable={false}
                       />
                       <span
-                        className="absolute -left-2 -top-2 grid size-5 place-items-center rounded-full bg-primary text-primary-foreground"
+                        className="absolute -left-3 -top-3 grid size-7 place-items-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-sm"
                         aria-hidden="true"
                       >
-                        <Grip className="size-3" />
+                        <Grip className="size-3.5" />
                       </span>
                       <span
                         role="slider"
@@ -421,7 +423,7 @@ function Page() {
                         aria-valuenow={Math.round(position.width * 100)}
                         aria-valuetext={`${Math.round(position.width * 100)}% wide`}
                         tabIndex={0}
-                        className="absolute -bottom-2 -right-2 size-5 cursor-se-resize rounded-full border-2 border-background bg-primary"
+                        className="absolute -bottom-3 -right-3 size-7 cursor-se-resize touch-none rounded-full border-2 border-background bg-primary shadow-sm"
                         onKeyDown={resizeSignatureWithKeyboard}
                         onPointerDown={(event) => startDrag(event, "resize")}
                         onPointerMove={dragSignature}
