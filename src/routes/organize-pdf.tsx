@@ -79,19 +79,18 @@ function Page() {
     try {
       const bytes = await next.arrayBuffer();
       setProgress(35);
-      const thumbs = await renderThumbnails(bytes, 220);
+      // Show each page as soon as it is drawn instead of waiting for the whole
+      // document, and show the file straight away so the first page appears fast.
+      setFile(next);
+      const thumbs = await renderThumbnails(bytes, 220, (index, url) => {
+        setPages((current) => [
+          ...current,
+          { id: `p${index}`, source: index, label: index + 1, thumb: url, rotation: 0 },
+        ]);
+        setProgress(35 + Math.min(45, (index + 1) * 6));
+      });
       setProgress(80);
       if (thumbs.length === 0) throw new Error("This PDF has no pages");
-      setPages(
-        thumbs.map((thumb, index) => ({
-          id: `p${index}`,
-          source: index,
-          label: index + 1,
-          thumb,
-          rotation: 0,
-        })),
-      );
-      setFile(next);
       setProgress(100);
       setStatus(null);
       setSuccess(
