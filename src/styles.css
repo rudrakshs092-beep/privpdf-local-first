@@ -50,6 +50,7 @@
 }
 
 :root {
+  color-scheme: light;
   --radius: 0.625rem;
 
   /* Brand accent */
@@ -87,6 +88,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #0b1220;
   --foreground: #e8eefb;
   --surface: #121a2b;
