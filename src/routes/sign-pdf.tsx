@@ -44,6 +44,19 @@ type DragAction = "move" | "resize";
 
 const INITIAL_POSITION: SignaturePosition = { x: 0.62, y: 0.76, width: 0.28, height: 0.12 };
 
+const SIGNATURE_COLORS = [
+  { name: "Black", value: "#111827" },
+  { name: "Red", value: "#DC2626" },
+  { name: "Blue", value: "#2563EB" },
+  { name: "Green", value: "#16A34A" },
+  { name: "Purple", value: "#7C3AED" },
+  { name: "Orange", value: "#EA580C" },
+  { name: "Pink", value: "#DB2777" },
+  { name: "Teal", value: "#0F766E" },
+] as const;
+
+const DEFAULT_SIGNATURE_COLOR = SIGNATURE_COLORS[0].value;
+
 function isPdf(file: File) {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
 }
@@ -63,6 +76,7 @@ function Page() {
   const [pages, setPages] = useState<PreviewPage[]>([]);
   const [selectedPage, setSelectedPage] = useState(1);
   const [signature, setSignature] = useState<string | null>(null);
+  const [signatureColor, setSignatureColor] = useState<string>(DEFAULT_SIGNATURE_COLOR);
   const [position, setPosition] = useState<SignaturePosition>(INITIAL_POSITION);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -163,6 +177,10 @@ function Page() {
     const rect = canvas.getBoundingClientRect();
     const context = canvas.getContext("2d");
     if (!context) return;
+    context.strokeStyle = signatureColor;
+    context.lineWidth = 4;
+    context.lineCap = "round";
+    context.lineJoin = "round";
     const x = ((event.clientX - rect.left) / rect.width) * canvas.width;
     const y = ((event.clientY - rect.top) / rect.height) * canvas.height;
     if (!drawingRef.current) {
@@ -339,14 +357,36 @@ function Page() {
                   aria-label="Signature drawing area"
                 />
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Button variant="secondary" size="sm" onClick={clearSignature}>
-                  <Eraser className="mr-2 size-4" aria-hidden="true" />
-                  Clear signature
-                </Button>
-                <span className="inline-flex items-center text-xs text-muted-foreground">
-                  Draw inside the box above.
-                </span>
+              <div className="mt-3 grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
+                <div>
+                  <p className="text-xs font-semibold text-foreground">Pen color</p>
+                  <div className="mt-2 grid grid-cols-4 gap-2 sm:flex sm:flex-wrap">
+                    {SIGNATURE_COLORS.map((color) => {
+                      const selected = signatureColor === color.value;
+                      return (
+                        <button
+                          key={color.name}
+                          type="button"
+                          aria-label={`${color.name} signature color`}
+                          aria-pressed={selected}
+                          title={color.name}
+                          onClick={() => setSignatureColor(color.value)}
+                          className={`grid size-11 place-items-center rounded-full border-2 transition-[box-shadow,transform] duration-150 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${selected ? "border-background ring-2 ring-primary ring-offset-2" : "border-white/80 shadow-sm"}`}
+                          style={{ backgroundColor: color.value }}
+                        >
+                          {selected ? <Check className="size-5 text-white" aria-hidden="true" /> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="secondary" size="sm" onClick={clearSignature}>
+                    <Eraser className="mr-2 size-4" aria-hidden="true" />
+                    Clear signature
+                  </Button>
+                  <span className="text-xs text-muted-foreground">Draw inside the box above.</span>
+                </div>
               </div>
             </div>
 
