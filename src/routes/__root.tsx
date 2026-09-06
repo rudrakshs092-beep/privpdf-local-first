@@ -87,6 +87,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Simple PDF tools without unnecessary uploads, sign-ups, watermarks or limits.",
       },
       { name: "author", content: "PrivPDF" },
+      {
+        name: "google-site-verification",
+        content: "Cz3LbfpKtgbNSoEkg6hmnsAgGcXSXHabnlBry6sGVM0",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
