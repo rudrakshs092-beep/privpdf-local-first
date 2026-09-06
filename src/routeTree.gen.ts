@@ -20,9 +20,11 @@ import { Route as OrganizePdfRouteImport } from './routes/organize-pdf'
 import { Route as PageNumbersRouteImport } from './routes/page-numbers'
 import { Route as PdfToImageRouteImport } from './routes/pdf-to-image'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RotatePdfRouteImport } from './routes/rotate-pdf'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SignPdfRouteImport } from './routes/sign-pdf'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SplitPdfRouteImport } from './routes/split-pdf'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TextWatermarkRouteImport } from './routes/text-watermark'
@@ -83,6 +85,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RotatePdfRoute = RotatePdfRouteImport.update({
   id: '/rotate-pdf',
   path: '/rotate-pdf',
@@ -96,6 +103,11 @@ const SecurityRoute = SecurityRouteImport.update({
 const SignPdfRoute = SignPdfRouteImport.update({
   id: '/sign-pdf',
   path: '/sign-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SplitPdfRoute = SplitPdfRouteImport.update({
@@ -131,9 +143,11 @@ export interface FileRoutesByFullPath {
   '/page-numbers': typeof PageNumbersRoute
   '/pdf-to-image': typeof PdfToImageRoute
   '/privacy': typeof PrivacyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/security': typeof SecurityRoute
   '/sign-pdf': typeof SignPdfRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/text-watermark': typeof TextWatermarkRoute
@@ -151,9 +165,11 @@ export interface FileRoutesByTo {
   '/page-numbers': typeof PageNumbersRoute
   '/pdf-to-image': typeof PdfToImageRoute
   '/privacy': typeof PrivacyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/security': typeof SecurityRoute
   '/sign-pdf': typeof SignPdfRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/text-watermark': typeof TextWatermarkRoute
@@ -172,9 +188,11 @@ export interface FileRoutesById {
   '/page-numbers': typeof PageNumbersRoute
   '/pdf-to-image': typeof PdfToImageRoute
   '/privacy': typeof PrivacyRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/rotate-pdf': typeof RotatePdfRoute
   '/security': typeof SecurityRoute
   '/sign-pdf': typeof SignPdfRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/split-pdf': typeof SplitPdfRoute
   '/terms': typeof TermsRoute
   '/text-watermark': typeof TextWatermarkRoute
@@ -194,9 +212,11 @@ export interface FileRouteTypes {
     | '/page-numbers'
     | '/pdf-to-image'
     | '/privacy'
+    | '/robots.txt'
     | '/rotate-pdf'
     | '/security'
     | '/sign-pdf'
+    | '/sitemap.xml'
     | '/split-pdf'
     | '/terms'
     | '/text-watermark'
@@ -214,9 +234,11 @@ export interface FileRouteTypes {
     | '/page-numbers'
     | '/pdf-to-image'
     | '/privacy'
+    | '/robots.txt'
     | '/rotate-pdf'
     | '/security'
     | '/sign-pdf'
+    | '/sitemap.xml'
     | '/split-pdf'
     | '/terms'
     | '/text-watermark'
@@ -234,9 +256,11 @@ export interface FileRouteTypes {
     | '/page-numbers'
     | '/pdf-to-image'
     | '/privacy'
+    | '/robots.txt'
     | '/rotate-pdf'
     | '/security'
     | '/sign-pdf'
+    | '/sitemap.xml'
     | '/split-pdf'
     | '/terms'
     | '/text-watermark'
@@ -255,9 +279,11 @@ export interface RootRouteChildren {
   PageNumbersRoute: typeof PageNumbersRoute
   PdfToImageRoute: typeof PdfToImageRoute
   PrivacyRoute: typeof PrivacyRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   RotatePdfRoute: typeof RotatePdfRoute
   SecurityRoute: typeof SecurityRoute
   SignPdfRoute: typeof SignPdfRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SplitPdfRoute: typeof SplitPdfRoute
   TermsRoute: typeof TermsRoute
   TextWatermarkRoute: typeof TextWatermarkRoute
@@ -343,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rotate-pdf': {
       id: '/rotate-pdf'
       path: '/rotate-pdf'
@@ -362,6 +395,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-pdf'
       fullPath: '/sign-pdf'
       preLoaderRoute: typeof SignPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/split-pdf': {
@@ -407,9 +447,11 @@ const rootRouteChildren: RootRouteChildren = {
   PageNumbersRoute: PageNumbersRoute,
   PdfToImageRoute: PdfToImageRoute,
   PrivacyRoute: PrivacyRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   RotatePdfRoute: RotatePdfRoute,
   SecurityRoute: SecurityRoute,
   SignPdfRoute: SignPdfRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SplitPdfRoute: SplitPdfRoute,
   TermsRoute: TermsRoute,
   TextWatermarkRoute: TextWatermarkRoute,
