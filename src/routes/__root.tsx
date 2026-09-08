@@ -89,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "PrivPDF" },
       {
         name: "google-site-verification",
-        content: "Cz3LbfpKtgbNSoEkg6hmnsAgGcXSXHabnlBry6sGVM0",
+        content: "feTkEMu-VYSpt40huKnwLOo6ozB-VS9l2xaeCpmhIzo",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
